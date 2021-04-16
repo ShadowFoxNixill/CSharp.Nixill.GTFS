@@ -1,12 +1,14 @@
 using System.IO.Compression;
+using NodaTime;
 
 namespace Nixill.GTFS
 {
-  public class GTFSFile
+  public class GTFSFeed
   {
     internal ZipArchive File;
+    public DateTimeZone TimeZone { get; internal set; }
 
-    internal GTFSFile(ZipArchive file, bool preload)
+    internal GTFSFeed(ZipArchive file, bool preload)
     {
       File = file;
 

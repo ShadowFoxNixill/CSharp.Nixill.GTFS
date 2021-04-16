@@ -5,13 +5,21 @@ namespace Nixill.GTFS.Entities
 {
   public abstract class GTFSEntity
   {
-    public readonly GTFSFile File;
-    private Dictionary<string, string> _Properties;
+    public readonly GTFSFeed Feed;
+    private Dictionary<string, string> Properties;
 
-    public GTFSEntity(GTFSFile file, IDictionary<string, string> properties)
+    public GTFSEntity(GTFSFeed feed, IDictionary<string, string> properties)
     {
-      File = file;
-      _Properties = new Dictionary<string, string>(properties);
+      Feed = feed;
+      Properties = new Dictionary<string, string>(properties);
+    }
+
+    public string GetProperty(string name)
+    {
+      if (Properties.ContainsKey(name))
+        return Properties[name];
+      else
+        return null;
     }
   }
 }

@@ -1,25 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Nixill.GTFS.Entities;
 
 namespace Nixill.GTFS.Collections
 {
-  public class IDEntityCollection<T> : IReadOnlyDictionary<string, T> where T : GTFSIdentifiedEntity
+  public class IDEntityCollection<T> : ICollection<T> where T : GTFSIdentifiedEntity
   {
     internal Dictionary<string, T> Dict;
-    public readonly GTFSFile File;
+    public readonly GTFSFeed File;
 
-    // public methods
-    public T this[string key] => Dict[key];
-    public IEnumerable<string> Keys => Dict.Keys;
-    public IEnumerable<T> Values => Dict.Values;
     public int Count => Dict.Count;
-    public bool ContainsKey(string key) => Dict.ContainsKey(key);
-    public IEnumerator<KeyValuePair<string, T>> GetEnumerator() => Dict.GetEnumerator();
-    public bool TryGetValue(string key, [MaybeNullWhen(false)] out T value) => Dict.TryGetValue(key, out value);
-    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Dict).GetEnumerator();
+    public bool IsReadOnly => false;
 
-    // internal methods for writing
-    internal void Add(T )
+    public IEnumerator<T> GetEnumerator() => Dict.Values.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Dict.Values).GetEnumerator();
+
+    public void Add(T entity) => Dict.Add(entity.ID, entity);
+    public void Clear() => Dict.Clear();
+    public bool Contains(T item) => Dict.ContainsKey(item.ID);
+    public bool Contains(string key) => Dict.ContainsKey(key);
+    public void CopyTo(T[] array, int arrayIndex) => Dict.Values.CopyTo(array, arrayIndex);
+    public bool Remove(T item) => Dict.Remove(item.ID);
   }
 }

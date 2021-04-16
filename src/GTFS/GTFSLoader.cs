@@ -6,7 +6,7 @@ namespace Nixill.GTFS
 {
   public static class GTFSLoader
   {
-    public static GTFSFile Load(string path, bool preload = false)
+    public static GTFSFeed Load(string path, bool preload = false)
     {
       // First make sure the path itself exists
       if (!File.Exists(path))
@@ -21,7 +21,7 @@ namespace Nixill.GTFS
       HashSet<string> files = new HashSet<string>();
 
       // And the file object
-      GTFSFile ret = new GTFSFile(file, preload);
+      GTFSFeed ret = new GTFSFeed(file, preload);
 
       // And output! :D
       return ret;
