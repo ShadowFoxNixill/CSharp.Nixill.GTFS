@@ -20,7 +20,8 @@ namespace Nixill.GTFS.Collections
 
     public IEnumerator<T> GetEnumerator()
     {
-      if (Cached) {
+      if (Cached)
+      {
         foreach (T item in Collection) yield return item;
         yield break;
       }
@@ -51,7 +52,7 @@ namespace Nixill.GTFS.Collections
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-      throw new System.NotImplementedException();
+      return GetEnumerator();
     }
   }
 
