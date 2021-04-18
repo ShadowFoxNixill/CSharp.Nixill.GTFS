@@ -6,7 +6,7 @@ namespace Nixill.GTFS.Entities
   public abstract class GTFSEntity
   {
     public readonly GTFSFeed Feed;
-    private Dictionary<string, string> Properties;
+    protected Dictionary<string, string> Properties;
 
     public GTFSEntity(GTFSFeed feed, IDictionary<string, string> properties)
     {
@@ -21,5 +21,7 @@ namespace Nixill.GTFS.Entities
       else
         return null;
     }
+
+    public string this[string key] => Properties[key];
   }
 }

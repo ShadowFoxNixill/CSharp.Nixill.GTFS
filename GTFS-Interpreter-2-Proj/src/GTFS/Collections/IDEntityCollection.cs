@@ -15,27 +15,20 @@ namespace Nixill.GTFS.Collections
   {
     internal Dictionary<string, T> Dict;
     public readonly GTFSFeed Feed;
-    private ZipArchiveEntry InnerFile;
     private bool HasAgencyId;
-    private bool Cached;
     private GTFSEntityFactory<T> ObjectFactory;
 
     public int Count => Dict.Count;
 
-    public IDEntityCollection(GTFSFeed feed, ZipArchiveEntry file, GTFSEntityFactory<T> factory, bool cache = false, bool hasAgency = false)
+    public IDEntityCollection(GTFSFeed feed, ZipArchiveEntry file, GTFSEntityFactory<T> factory, bool hasAgency = false)
     {
       Dict = new Dictionary<string, T>();
       Feed = feed;
-      InnerFile = file;
-      Cached = cache;
       ObjectFactory = factory;
       HasAgencyId = hasAgency;
-      if (cache)
+      foreach (T item in FileEnumerable(file))
       {
-        foreach (T item in FileEnumerable())
-        {
-          Dict.Add(item.ID, item);
-        }
+        Dict.Add(item.ID, item);
       }
     }
 
@@ -43,10 +36,12 @@ namespace Nixill.GTFS.Collections
     {
       Dict = new Dictionary<string, T>();
       Feed = feed;
-      InnerFile = null;
-      Cached = true;
       ObjectFactory = null;
       HasAgencyId = hasAgency;
+      foreach (T item in objects)
+      {
+        Dict.Add(item.ID, item);
+      }
     }
 
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Dict.Values).GetEnumerator();
@@ -55,24 +50,24 @@ namespace Nixill.GTFS.Collections
     public bool Contains(string key) => Dict.ContainsKey(key);
 
     public IEnumerator<T> GetEnumerator()
-    {
-      if (Cached) return Dict.Values.GetEnumerator();
-      else return FileEnumerable().GetEnumerator();
-    }
+      => Dict.Values.GetEnumerator();
 
-    private IEnumerable<T> FileEnumerable()
+    public T this[string index] => Dict[index];
+
+    private IEnumerable<T> FileEnumerable(ZipArchiveEntry file)
     {
-      using var stream = new StreamReader(InnerFile.Open());
+      using var stream = new StreamReader(file.Open());
       var rows = CSVParser.EnumerableToRows(FileUtils.StreamCharEnumerator(stream));
 
       List<string> header = new List<string>();
-      bool first = false;
+      bool first = true;
 
       foreach (List<string> row in rows)
       {
         if (first)
         {
           header = row;
+          first = false;
           continue;
         }
 
@@ -84,4 +79,6 @@ namespace Nixill.GTFS.Collections
       }
     }
   }
+
+  public delegate T GTFSEntityFactory<T>(GTFSFeed feed, Dictionary<string, string> props) where T : GTFSEntity;
 }
