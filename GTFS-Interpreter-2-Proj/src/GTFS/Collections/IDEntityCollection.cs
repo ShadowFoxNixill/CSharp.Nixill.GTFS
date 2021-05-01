@@ -56,6 +56,9 @@ namespace Nixill.GTFS.Collections
 
     private IEnumerable<T> FileEnumerable(ZipArchiveEntry file)
     {
+      // For null files, return empty collections
+      if (file == null) yield break;
+
       using var stream = new StreamReader(file.Open());
       var rows = CSVParser.EnumerableToRows(FileUtils.StreamCharEnumerator(stream));
 

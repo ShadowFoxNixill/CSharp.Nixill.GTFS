@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using Nixill.Utils;
@@ -8,6 +9,11 @@ namespace Nixill.GTFS.Parsing
   public static class GTFSObjectParser
   {
     private static IDateTimeZoneProvider TimezoneProvider = DateTimeZoneProviders.Tzdb;
+
+    internal static LocalDate GetDate(string v)
+    {
+      throw new NotImplementedException();
+    }
 
     public static string DefaultProperty(this Dictionary<string, string> dict, string property, string def)
     {

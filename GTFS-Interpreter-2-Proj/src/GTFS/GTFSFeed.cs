@@ -2,6 +2,8 @@ using System.IO.Compression;
 using Nixill.GTFS.Collections;
 using Nixill.GTFS.Entities;
 using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace Nixill.GTFS
 {
@@ -13,6 +15,7 @@ namespace Nixill.GTFS
 
     public IDEntityCollection<Agency> Agencies { get; internal set; }
     public IDEntityCollection<Route> Routes { get; internal set; }
+    public IDEntityCollection<Calendar> Calendars { get; internal set; }
 
     public GTFSFeed(ZipArchive file)
     {
