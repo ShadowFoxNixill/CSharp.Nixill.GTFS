@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Nixill.GTFS.Collections;
 
 namespace Nixill.GTFS.Entities
 {
@@ -6,7 +6,7 @@ namespace Nixill.GTFS.Entities
   {
     public readonly string ID;
 
-    protected GTFSIdentifiedEntity(GTFSFeed feed, Dictionary<string, string> properties, string idName) : base(feed, properties)
+    protected GTFSIdentifiedEntity(GTFSFeed feed, GTFSPropertyCollection properties, string idName) : base(feed, properties)
     {
       ID = properties[idName];
     }

@@ -2,6 +2,7 @@
 using System.IO.Compression;
 using Nixill.GTFS;
 using Nixill.GTFS.Entities;
+using NodaTime.Text;
 
 namespace Nixill.Testing
 {
@@ -9,15 +10,21 @@ namespace Nixill.Testing
   {
     static void Main(string[] args)
     {
-      GTFSFeed feed = new GTFSFeed(ZipFile.OpenRead("gtfs/ddot_gtfs.zip"));
+      GTFSFeed feed = new GTFSFeed(ZipFile.OpenRead("gtfs/smart_gtfs.zip"));
 
-      foreach (Agency ag in feed.Agencies)
+      LocalDatePattern ptn = LocalDatePattern.CreateWithInvariantCulture("ddd uuuu-MM-dd");
+
+      foreach (Calendar cal in feed.Calendars)
       {
-        Console.WriteLine(ag.Name);
-        foreach (Route rt in ag.Routes())
+        Console.WriteLine($"Calendar: {cal.ID}");
+        Console.WriteLine($"Provides service on: {DayMasks.Get(cal.Mask)}");
+        Console.WriteLine($"Active {ptn.Format(cal.StartDate)} through {ptn.Format(cal.EndDate)}");
+        Console.WriteLine("Exceptions:");
+        foreach (CalendarDate date in cal.Exceptions())
         {
-          Console.WriteLine((rt.ShortName ?? "") + " " + (rt.LongName ?? ""));
+          Console.WriteLine($"  {ptn.Format(date.Date)}: {date.ExceptionType}");
         }
+        Console.WriteLine();
       }
     }
   }

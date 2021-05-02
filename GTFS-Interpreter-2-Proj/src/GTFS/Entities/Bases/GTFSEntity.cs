@@ -1,17 +1,24 @@
 using System.Collections.Generic;
 using System.Linq;
+using Nixill.GTFS.Collections;
 
 namespace Nixill.GTFS.Entities
 {
   public abstract class GTFSEntity
   {
     public readonly GTFSFeed Feed;
-    protected Dictionary<string, string> Properties;
+    protected GTFSPropertyCollection Properties;
 
-    public GTFSEntity(GTFSFeed feed, IDictionary<string, string> properties)
+    public GTFSEntity(GTFSFeed feed, IDictionary<string, string> properties) : this(feed, new GTFSPropertyCollection(properties))
+    { }
+
+    public GTFSEntity(GTFSFeed feed, IEnumerable<(string, string)> properties) : this(feed, new GTFSPropertyCollection(properties))
+    { }
+
+    public GTFSEntity(GTFSFeed feed, GTFSPropertyCollection properties)
     {
       Feed = feed;
-      Properties = new Dictionary<string, string>(properties);
+      Properties = properties;
     }
 
     public string GetProperty(string name)

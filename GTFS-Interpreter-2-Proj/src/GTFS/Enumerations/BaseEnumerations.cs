@@ -21,4 +21,10 @@ namespace Nixill.GTFS.Enumerations
     PhoneAgency = 2,
     AskTheDriver = 3
   }
+
+  public enum ExceptionType
+  {
+    Added = 1,
+    Removed = 2
+  }
 }
