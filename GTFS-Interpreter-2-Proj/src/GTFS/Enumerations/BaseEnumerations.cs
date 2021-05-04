@@ -1,5 +1,12 @@
 namespace Nixill.GTFS.Enumerations
 {
+  public enum Tristate
+  {
+    Unknown = 0,
+    Yes = 1,
+    No = 2
+  }
+
   public enum RouteType
   {
     Tram = 0,
@@ -37,10 +44,9 @@ namespace Nixill.GTFS.Enumerations
     BoardingArea = 4
   }
 
-  public enum Tristate
+  public enum DirectionId
   {
-    Unknown = 0,
-    Yes = 1,
-    No = 2
+    OneDirection = 0,
+    OtherDirection = 1
   }
 }

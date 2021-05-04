@@ -19,6 +19,8 @@ namespace Nixill.GTFS.Collections
 
     public int Count => Calendars.Count;
 
+    public Calendar this[string id] => Calendars[id];
+
     public GTFSCalendarCollection(GTFSFeed feed, ZipArchiveEntry calendars, ZipArchiveEntry calendarDates)
     {
       CalendarDates = new TwoKeyEntityCollection<string, LocalDate, CalendarDate>(feed, calendarDates, CalendarDate.Factory);
