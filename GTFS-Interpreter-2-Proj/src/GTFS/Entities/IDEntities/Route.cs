@@ -35,8 +35,11 @@ namespace Nixill.GTFS.Entities
     public static Route Factory(GTFSFeed feed, IEnumerable<(string, string)> properties) => new Route(feed, new GTFSPropertyCollection(properties, feed.DefaultAgencyId));
   }
 
-  public static class RouteAgencyExtensions
+  namespace Extensions
   {
-    public static IEnumerable<Route> Routes(this Agency agency) => agency.Feed.Routes.Where(x => x.AgencyID == agency.ID);
+    public static class RouteAgencyExtensions
+    {
+      public static IEnumerable<Route> Routes(this Agency agency) => agency.Feed.Routes.Where(x => x.AgencyID == agency.ID);
+    }
   }
 }

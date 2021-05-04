@@ -27,16 +27,19 @@ namespace Nixill.GTFS.Entities
     }
   }
 
-  public static class CalendarDateExtensions
+  namespace Extensions
   {
-    public static IEnumerable<CalendarDate> Exceptions(this Calendar cal) =>
-      cal.Feed.Calendars.CalendarDates.WithFirstKey(cal.ID);
-
-    public static bool TotalServiceOn(this Calendar cal, LocalDate date)
+    public static class CalendarDateExtensions
     {
-      TwoKeyEntityCollection<string, LocalDate, CalendarDate> calendarDates = cal.Feed.Calendars.CalendarDates;
-      if (calendarDates.Contains((cal.ID, date))) return calendarDates[cal.ID, date].IsAdded;
-      return cal.ServiceOn(date);
+      public static IEnumerable<CalendarDate> Exceptions(this Calendar cal) =>
+        cal.Feed.Calendars.CalendarDates.WithFirstKey(cal.ID);
+
+      public static bool TotalServiceOn(this Calendar cal, LocalDate date)
+      {
+        TwoKeyEntityCollection<string, LocalDate, CalendarDate> calendarDates = cal.Feed.Calendars.CalendarDates;
+        if (calendarDates.Contains((cal.ID, date))) return calendarDates[cal.ID, date].IsAdded;
+        return cal.ServiceOn(date);
+      }
     }
   }
 }
