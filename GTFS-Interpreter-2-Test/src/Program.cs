@@ -2,6 +2,7 @@
 using System.IO.Compression;
 using Nixill.GTFS;
 using Nixill.GTFS.Entities;
+using Nixill.GTFS.Entities.Extensions;
 using NodaTime.Text;
 using System.Linq;
 
