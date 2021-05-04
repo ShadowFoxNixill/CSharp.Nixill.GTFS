@@ -27,4 +27,20 @@ namespace Nixill.GTFS.Enumerations
     Added = 1,
     Removed = 2
   }
+
+  public enum StopLocationType
+  {
+    StopPlatform = 0,
+    Station = 1,
+    EntranceExit = 2,
+    GenericNode = 3,
+    BoardingArea = 4
+  }
+
+  public enum Tristate
+  {
+    Unknown = 0,
+    Yes = 1,
+    No = 2
+  }
 }

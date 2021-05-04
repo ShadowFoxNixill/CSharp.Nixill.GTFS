@@ -52,7 +52,14 @@ namespace Nixill.GTFS.Collections
     public IReadOnlyCollection<GTFSUnparsedEntity> GetUnparsed() =>
       Unparsed.AsReadOnly();
 
-    public T this[string index] => Dict[index];
+    public T this[string index]
+    {
+      get
+      {
+        if (Dict.ContainsKey(index)) return Dict[index];
+        return null;
+      }
+    }
   }
 
   public delegate T GTFSEntityFactory<T>(GTFSFeed feed, IEnumerable<(string, string)> props) where T : GTFSEntity;

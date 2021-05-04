@@ -3,6 +3,7 @@ using System.IO.Compression;
 using Nixill.GTFS;
 using Nixill.GTFS.Entities;
 using NodaTime.Text;
+using System.Linq;
 
 namespace Nixill.Testing
 {
@@ -10,8 +11,22 @@ namespace Nixill.Testing
   {
     static void Main(string[] args)
     {
-      GTFSFeed feed = new GTFSFeed(ZipFile.OpenRead("gtfs/smart_gtfs.zip"));
+      GTFSFeed feed = new GTFSFeed(ZipFile.OpenRead("gtfs/ddot_gtfs.zip"));
+      StopTest(feed);
+    }
 
+    private static void StopTest(GTFSFeed feed)
+    {
+      var stops = feed.Stops.GroupBy(x => x.LocationType);
+
+      foreach (var x in stops)
+      {
+        Console.WriteLine($"Location type {x.Key}: {x.Count()}");
+      }
+    }
+
+    static void CalendarTest(GTFSFeed feed)
+    {
       LocalDatePattern ptn = LocalDatePattern.CreateWithInvariantCulture("ddd uuuu-MM-dd");
 
       foreach (Calendar cal in feed.Calendars)

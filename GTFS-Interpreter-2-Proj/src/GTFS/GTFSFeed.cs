@@ -13,9 +13,10 @@ namespace Nixill.GTFS
 
     public string DefaultAgencyId => Agencies.First().ID;
 
-    public IDEntityCollection<Agency> Agencies { get; internal set; }
-    public IDEntityCollection<Route> Routes { get; internal set; }
-    public GTFSCalendarCollection Calendars { get; internal set; }
+    public readonly IDEntityCollection<Agency> Agencies;
+    public readonly IDEntityCollection<Route> Routes;
+    public readonly GTFSCalendarCollection Calendars;
+    public readonly IDEntityCollection<Stop> Stops;
 
     public GTFSFeed(ZipArchive file)
     {
@@ -24,6 +25,7 @@ namespace Nixill.GTFS
       Agencies = new IDEntityCollection<Agency>(this, file.GetEntry("agency.txt"), Agency.Factory);
       Routes = new IDEntityCollection<Route>(this, file.GetEntry("routes.txt"), Route.Factory);
       Calendars = new GTFSCalendarCollection(this, file.GetEntry("calendar.txt"), file.GetEntry("calendar_dates.txt"));
+      Stops = new IDEntityCollection<Stop>(this, file.GetEntry("stops.txt"), Stop.Factory);
     }
   }
 }
