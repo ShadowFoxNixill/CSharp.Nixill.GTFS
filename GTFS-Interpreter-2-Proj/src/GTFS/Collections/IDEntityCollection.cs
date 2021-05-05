@@ -15,14 +15,14 @@ namespace Nixill.GTFS.Collections
 
     public int Count => Dict.Count;
 
-    public IDEntityCollection(GTFSFeed feed, ZipArchiveEntry file, GTFSEntityFactory<T> factory)
+    public IDEntityCollection(GTFSFeed feed, IGTFSDataSource source, string tableName, GTFSEntityFactory<T> factory)
     {
       Dict = new Dictionary<string, T>();
       Unparsed = new List<GTFSUnparsedEntity>();
       Feed = feed;
       ObjectFactory = factory;
 
-      foreach (T item in GTFSFileEnumerator.Enumerate(Feed, file, ObjectFactory, Unparsed))
+      foreach (T item in source.GetObjects(Feed, tableName, ObjectFactory, Unparsed))
       {
         Dict.Add(item.ID, item);
       }

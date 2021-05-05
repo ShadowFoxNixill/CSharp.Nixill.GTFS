@@ -10,11 +10,27 @@ using Nixill.Utils;
 
 namespace Nixill.GTFS.Parsing
 {
-  public static class GTFSFileEnumerator
+  public class ZipGTFSDataSource : IGTFSDataSource
   {
-    public static IEnumerable<T> Enumerate<T>(GTFSFeed feed, ZipArchiveEntry file, GTFSEntityFactory<T> factory, List<GTFSUnparsedEntity> unparsed) where T : GTFSEntity
+    private ZipArchive Archive;
+
+    public ZipGTFSDataSource(ZipArchive archive)
     {
-      // For null files, return empty collections
+      Archive = archive;
+    }
+
+    public ZipGTFSDataSource(string archiveName) : this(ZipFile.OpenRead(archiveName))
+    { }
+
+    public IEnumerable<T> GetObjects<T>(GTFSFeed feed, string table, GTFSEntityFactory<T> factory, List<GTFSUnparsedEntity> unparsed) where T : GTFSEntity
+    {
+      // Get the file:
+      ZipArchiveEntry file = Archive.GetEntry(table);
+
+      // If that's not found, try appending .txt:
+      if (file == null) file = Archive.GetEntry($"{table}.txt");
+
+      // If still nout found, return an empty collection.
       if (file == null) yield break;
 
       using var stream = new StreamReader(file.Open());

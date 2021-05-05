@@ -1,10 +1,10 @@
 ﻿using System;
-using System.IO.Compression;
 using Nixill.GTFS;
 using Nixill.GTFS.Entities;
 using Nixill.GTFS.Entities.Extensions;
 using NodaTime.Text;
 using System.Linq;
+using Nixill.GTFS.Parsing;
 
 namespace Nixill.Testing
 {
@@ -12,7 +12,7 @@ namespace Nixill.Testing
   {
     static void Main(string[] args)
     {
-      GTFSFeed feed = new GTFSFeed(ZipFile.OpenRead("gtfs/ddot_gtfs.zip"));
+      GTFSFeed feed = new GTFSFeed(new ZipGTFSDataSource("gtfs/ddot_gtfs.zip"));
       StopTest(feed);
     }
 

@@ -4,12 +4,13 @@ using Nixill.GTFS.Entities;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using Nixill.GTFS.Parsing;
 
 namespace Nixill.GTFS
 {
   public class GTFSFeed
   {
-    internal ZipArchive File;
+    internal IGTFSDataSource DataSource;
 
     public string DefaultAgencyId => Agencies.First().ID;
 
@@ -18,14 +19,14 @@ namespace Nixill.GTFS
     public readonly GTFSCalendarCollection Calendars;
     public readonly IDEntityCollection<Stop> Stops;
 
-    public GTFSFeed(ZipArchive file)
+    public GTFSFeed(IGTFSDataSource source)
     {
-      File = file;
+      DataSource = source;
 
-      Agencies = new IDEntityCollection<Agency>(this, file.GetEntry("agency.txt"), Agency.Factory);
-      Routes = new IDEntityCollection<Route>(this, file.GetEntry("routes.txt"), Route.Factory);
-      Calendars = new GTFSCalendarCollection(this, file.GetEntry("calendar.txt"), file.GetEntry("calendar_dates.txt"));
-      Stops = new IDEntityCollection<Stop>(this, file.GetEntry("stops.txt"), Stop.Factory);
+      Agencies = new IDEntityCollection<Agency>(this, source, "agency", Agency.Factory);
+      Routes = new IDEntityCollection<Route>(this, source, "routes", Route.Factory);
+      Calendars = new GTFSCalendarCollection(this, source);
+      Stops = new IDEntityCollection<Stop>(this, source, "stops", Stop.Factory);
     }
   }
 }

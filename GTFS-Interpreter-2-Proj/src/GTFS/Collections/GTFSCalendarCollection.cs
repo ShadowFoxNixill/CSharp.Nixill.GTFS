@@ -21,9 +21,9 @@ namespace Nixill.GTFS.Collections
 
     public Calendar this[string id] => Calendars[id];
 
-    public GTFSCalendarCollection(GTFSFeed feed, ZipArchiveEntry calendars, ZipArchiveEntry calendarDates)
+    public GTFSCalendarCollection(GTFSFeed feed, IGTFSDataSource source)
     {
-      CalendarDates = new TwoKeyEntityCollection<string, LocalDate, CalendarDate>(feed, calendarDates, CalendarDate.Factory);
+      CalendarDates = new TwoKeyEntityCollection<string, LocalDate, CalendarDate>(feed, source, "calendar_dates", CalendarDate.Factory);
 
       string today = GTFSObjectParser.DatePattern.Format(SystemClock.Instance.GetCurrentInstant().InZone(DateTimeZone.Utc).LocalDateTime.Date);
 
@@ -42,7 +42,7 @@ namespace Nixill.GTFS.Collections
       List<string> serviceIds = CalendarDates.FirstKeys.ToList();
 
       List<Calendar> cals = new List<Calendar>();
-      foreach (Calendar cal in GTFSFileEnumerator.Enumerate(feed, calendars, Calendar.Factory, UnparsedCalendars))
+      foreach (Calendar cal in source.GetObjects(feed, "calendar", Calendar.Factory, UnparsedCalendars))
       {
         serviceIds.Remove(cal.ID);
         cals.Add(cal);
