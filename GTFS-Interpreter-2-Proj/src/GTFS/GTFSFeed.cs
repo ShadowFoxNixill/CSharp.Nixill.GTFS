@@ -10,7 +10,7 @@ namespace Nixill.GTFS
 {
   public class GTFSFeed
   {
-    internal IGTFSDataSource DataSource;
+    public readonly IGTFSDataSource DataSource;
 
     public string DefaultAgencyId => Agencies.First().ID;
 
