@@ -8,58 +8,76 @@ using NodaTime;
 
 namespace Nixill.GTFS.Collections
 {
-  public class GTFSCalendarCollection : IReadOnlyCollection<Calendar>
+  /// <summary>
+  /// A collection of <see cref="Calendar" />s and
+  /// <see cref="CalendarDate" />s.
+  /// </summary>
+  public class GTFSCalendarCollection : IReadOnlyCollection<(Calendar, IEnumerable<CalendarDate>)>
   {
+    /// <summary>
+    /// The collection of <see cref="Calendar">s within in the feed data.
+    /// </summary>
+    /// <remarks>
+    /// This collection doesn't include virtual calendars that are only
+    /// present within <c>calendar_dates</c>.
+    /// </remarks>
     public readonly IDEntityCollection<Calendar> Calendars;
+
+    /// <summary>
+    /// The collection of <see cref="CalendarDate">s within the feed data.
+    /// </summary>
     public readonly TwoKeyEntityCollection<string, LocalDate, CalendarDate> CalendarDates;
 
-    private List<GTFSUnparsedEntity> UnparsedCalendars = new List<GTFSUnparsedEntity>();
+    /// <summary>
+    /// The collection of <c>service_id</c>s across both the
+    /// <c>calendar</c> and <c>calendar_dates</c> tables.
+    /// </summary>
+    public readonly IReadOnlyList<string> ServiceIds;
 
+    /// <summary>
+    /// The GTFS feed from which this collection was derived.
+    /// </summary>
     public readonly GTFSFeed Feed;
 
-    public int Count => Calendars.Count;
+    /// <summary>
+    /// Returns the count <see cref="ServiceIds" />.
+    /// </summary>
+    public int Count => ServiceIds.Count;
 
-    public Calendar this[string id] => Calendars[id];
-
-    public GTFSCalendarCollection(GTFSFeed feed, IGTFSDataSource source)
+    /// <summary>
+    /// Gets both a <see cref="Calendar" /> (which may be <c>null</c>) and
+    /// the list of <see cref="CalendarDate" />s corresponding to the
+    /// given <c>service_id</c>.
+    /// </summary>
+    public (Calendar, IEnumerable<CalendarDate>) this[string id]
     {
-      CalendarDates = new TwoKeyEntityCollection<string, LocalDate, CalendarDate>(feed, source, "calendar_dates", CalendarDate.Factory);
-
-      string today = GTFSObjectParser.DatePattern.Format(SystemClock.Instance.GetCurrentInstant().InZone(DateTimeZone.Utc).LocalDateTime.Date);
-
-      GTFSPropertyCollection defaultCalendar = new GTFSPropertyCollection(new Dictionary<string, string>{
-        {"start_date", today},
-        {"end_date", today},
-        {"sunday", "0"},
-        {"monday", "0"},
-        {"tuesday", "0"},
-        {"wednesday", "0"},
-        {"thursday", "0"},
-        {"friday", "0"},
-        {"saturday", "0"}
-      });
-
-      List<string> serviceIds = CalendarDates.FirstKeys.ToList();
-
-      List<Calendar> cals = new List<Calendar>();
-      foreach (Calendar cal in source.GetObjects(feed, "calendar", Calendar.Factory, UnparsedCalendars))
+      get
       {
-        serviceIds.Remove(cal.ID);
-        cals.Add(cal);
+        if (Calendars.Contains(id)) return (Calendars[id], CalendarDates.WithFirstKey(id));
+        else return (null, CalendarDates.WithFirstKey(id));
       }
-
-      foreach (string id in serviceIds)
-      {
-        Calendar cal = Calendar.Factory(feed, defaultCalendar.Select(x => (x.Key, x.Value)));
-      }
-
-      Calendars = new IDEntityCollection<Calendar>(feed, cals);
     }
 
-    public IEnumerator<Calendar> GetEnumerator() => Calendars.GetEnumerator();
-    IEnumerator IEnumerable.GetEnumerator() => Calendars.GetEnumerator();
+    /// <summary>
+    /// Creates a <c>GTFSCalendarCollection</c> from a given
+    /// <see cref="GTFSFeed" />, using the default <c>calendar</c> and
+    /// <c>calendar_dates</c> tables.
+    /// </summary>
+    public GTFSCalendarCollection(GTFSFeed feed) : this(feed, "calendar", "calendar_dates") { }
 
-    public IReadOnlyCollection<GTFSUnparsedEntity> GetUnparsedCalendars() =>
-      UnparsedCalendars.AsReadOnly();
+    /// <summary>
+    /// Creates a <c>GTFSCalendarCollection</c> from a given
+    /// <see cref="GTFSFeed" />, using user-defined table names.
+    /// </summary>
+    public GTFSCalendarCollection(GTFSFeed feed, string calendarTable, string calendarDateTable)
+    {
+      Calendars = new IDEntityCollection<Calendar>(feed, calendarTable, Calendar.Factory);
+      CalendarDates = new TwoKeyEntityCollection<string, LocalDate, CalendarDate>(feed, calendarDateTable, CalendarDate.Factory);
+
+      ServiceIds = Calendars.Select(x => x.ID).Union(CalendarDates.FirstKeys).ToList().AsReadOnly();
+    }
+
+    public IEnumerator<(Calendar, IEnumerable<CalendarDate>)> GetEnumerator() => ServiceIds.Select(x => this[x]).GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => (IEnumerator)(GetEnumerator());
   }
 }

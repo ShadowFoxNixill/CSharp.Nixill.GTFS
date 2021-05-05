@@ -6,34 +6,50 @@ using Nixill.GTFS.Parsing;
 
 namespace Nixill.GTFS.Collections
 {
+  /// <summary>
+  ///   A collection of <see cref="GTFSIdentifiedEntity" />s, accessible
+  ///   by their IDs.
+  /// </summary>
   public class IDEntityCollection<T> : IReadOnlyCollection<T> where T : GTFSIdentifiedEntity
   {
     private Dictionary<string, T> Dict;
     private List<GTFSUnparsedEntity> Unparsed;
-    public readonly GTFSFeed Feed;
-    private GTFSEntityFactory<T> ObjectFactory;
 
+    /// <summary>
+    ///   The <see cref="GTFSFeed"> from which this collection was made.
+    /// </summary>
+    public readonly GTFSFeed Feed;
+
+    /// <summary>
+    ///   The number of items within this collection.
+    /// </summary>
     public int Count => Dict.Count;
 
-    public IDEntityCollection(GTFSFeed feed, IGTFSDataSource source, string tableName, GTFSEntityFactory<T> factory)
+    /// <summary>
+    ///   Creates a new IDEntityCollection from the given table in the
+    ///   given feed.
+    /// </summary>
+    public IDEntityCollection(GTFSFeed feed, string tableName, GTFSEntityFactory<T> factory)
     {
       Dict = new Dictionary<string, T>();
       Unparsed = new List<GTFSUnparsedEntity>();
       Feed = feed;
-      ObjectFactory = factory;
 
-      foreach (T item in source.GetObjects(Feed, tableName, ObjectFactory, Unparsed))
+      foreach (T item in feed.DataSource.GetObjects(Feed, tableName, factory, Unparsed))
       {
         Dict.Add(item.ID, item);
       }
     }
 
+    /// <summary>
+    ///   Creates a new IDEntityCollection from the given collection of
+    ///   existing objects.
+    /// </summary>
     public IDEntityCollection(GTFSFeed feed, ICollection<T> objects)
     {
       Dict = new Dictionary<string, T>();
       Unparsed = new List<GTFSUnparsedEntity>();
       Feed = feed;
-      ObjectFactory = null;
 
       foreach (T item in objects)
       {
