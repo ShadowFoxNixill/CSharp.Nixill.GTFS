@@ -6,6 +6,20 @@ using NodaTime;
 
 namespace Nixill.GTFS.Entities
 {
+  /// <summary>
+  ///   A key location in a GTFS feed, such as a transit stop, station,
+  ///   or station entrance/exit.
+  /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     The ID for a <c>Stop</c> is its <c>stop_id</c> property.
+  ///   </para>
+  ///   <para>
+  ///     The term "station entrance" refers to both station entrances and
+  ///     station exits. Stops, stations or station entrances are
+  ///     collectively referred to as locations. Multiple routes may use the same stop.
+  ///   </para>
+  /// </remarks>
   public class Stop : GTFSIdentifiedEntity
   {
     public string StopCode => Properties["stop_code"];

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Nixill.GTFS.Collections;
 
 namespace Nixill.GTFS.Entities
 {
@@ -7,7 +8,7 @@ namespace Nixill.GTFS.Entities
   {
     public readonly Exception Exception;
 
-    public GTFSUnparsedEntity(GTFSFeed feed, IEnumerable<(string, string)> properties, Exception ex) : base(feed, properties)
+    public GTFSUnparsedEntity(GTFSFeed feed, GTFSPropertyCollection properties, Exception ex) : base(feed, properties)
     {
       Exception = ex;
     }

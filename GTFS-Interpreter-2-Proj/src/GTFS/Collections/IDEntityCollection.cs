@@ -10,18 +10,21 @@ namespace Nixill.GTFS.Collections
   ///   A collection of <see cref="GTFSIdentifiedEntity" />s, accessible
   ///   by their IDs.
   /// </summary>
+  /// <typeparam name="T">
+  ///   The type of entity that this collection contains.
+  /// </typeparam>
   public class IDEntityCollection<T> : IReadOnlyCollection<T> where T : GTFSIdentifiedEntity
   {
     private Dictionary<string, T> Dict;
     private List<GTFSUnparsedEntity> Unparsed;
 
     /// <summary>
-    ///   The <see cref="GTFSFeed"> from which this collection was made.
+    ///   The <see cref="GTFSFeed" /> from which this collection was made.
     /// </summary>
     public readonly GTFSFeed Feed;
 
     /// <summary>
-    ///   The number of items within this collection.
+    ///   The number of entities within this collection.
     /// </summary>
     public int Count => Dict.Count;
 
@@ -57,17 +60,37 @@ namespace Nixill.GTFS.Collections
       }
     }
 
-    IEnumerator IEnumerable.GetEnumerator() => Dict.Values.GetEnumerator();
-
+    /// <summary>
+    ///   Returns <c>true</c> iff the collection contains the given entity.
+    /// </summary>
+    /// <remarks>
+    ///   More specifically, this is <c>true</c> iff the collection has a
+    ///   key that matches the given entity's ID.
+    /// </remarks>
     public bool Contains(T item) => Dict.ContainsKey(item.ID);
+
+    /// <summary>
+    ///   Returns <c>true</c> iff the collection contains a given key.
+    /// </summary>
     public bool Contains(string key) => Dict.ContainsKey(key);
 
+    /// <summary>
+    ///   Returns an enumerator over the objects within the collection.
+    /// </summary>
     public IEnumerator<T> GetEnumerator()
       => Dict.Values.GetEnumerator();
 
+    /// <summary>
+    ///   Returns a list of <see cref="GTFSUnparsedEntity" />s created
+    ///   from the data in this table.
+    /// </summary>
     public IReadOnlyCollection<GTFSUnparsedEntity> GetUnparsed() =>
       Unparsed.AsReadOnly();
 
+    /// <summary>
+    ///    Returns the entity with this key, if one is stored. Otherwise,
+    ///    returns <c>null</c>.
+    /// </summary>
     public T this[string index]
     {
       get
@@ -76,7 +99,13 @@ namespace Nixill.GTFS.Collections
         return null;
       }
     }
+
+    IEnumerator IEnumerable.GetEnumerator() => Dict.Values.GetEnumerator();
   }
 
+  /// <summary>
+  ///   A method that takes the properties of an entity and outputs the
+  ///   entity with those properties.
+  /// </summary>
   public delegate T GTFSEntityFactory<T>(GTFSFeed feed, IEnumerable<(string, string)> props) where T : GTFSEntity;
 }
