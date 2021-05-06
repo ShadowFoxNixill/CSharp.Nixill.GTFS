@@ -8,6 +8,9 @@ using NodaTime.Text;
 
 namespace Nixill.GTFS.Parsing
 {
+  /// <summary>
+  ///   Utility class to convert string values to other data types.
+  /// </summary>
   public static class GTFSObjectParser
   {
     // Color: A color encoded as a six-digit hexadecimal number. Refer to
@@ -17,6 +20,14 @@ namespace Nixill.GTFS.Parsing
     //   A, C, E lines in NYMTA.
     public static readonly Regex ColorRegex = new Regex(@"^[0-9a-f]{6}$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
+    /// <summary>
+    ///   Returns a <see cref="Color" /> if the input is a valid color;
+    ///   otherwise, returns <c>null</c>.
+    /// </summary>
+    /// <remarks>
+    ///   To be a valid Color, the input must be a six hex digit code,
+    ///   WITHOUT the leading <c>#</c> sign.
+    /// </remarks>
     public static Color? GetNullableColor(string input)
     {
       if (input == null) return null;
@@ -26,6 +37,16 @@ namespace Nixill.GTFS.Parsing
     }
     public static Color? GetNullableColor(this GTFSPropertyCollection properties, string key) => GetNullableColor(properties[key]);
 
+    /// <summary>
+    ///   Returns a <see cref="Color" />.
+    /// </summary>
+    /// <remarks>
+    ///   To be a valid Color, the input must be a six hex digit code,
+    ///   WITHOUT the leading <c>#</c> sign.
+    /// </remarks>
+    /// <exception cref="ArgumentException">
+    ///   <c>input</c> is not a valid Color.
+    /// </exception>
     public static Color GetColor(string input, Color? def = null)
     {
       Color? test = GetNullableColor(input);
@@ -35,6 +56,13 @@ namespace Nixill.GTFS.Parsing
     }
     public static Color GetColor(this GTFSPropertyCollection properties, string key, Color? def = null) => GetColor(properties[key], def);
 
+    /// <summary>
+    ///   Returns whether or not the input is a valid color.
+    /// </summary>
+    /// <remarks>
+    ///   To be a valid color, the input must be a six hex digit code,
+    ///   WITHOUT the leading <c>#</c> sign.
+    /// </remarks>
     public static bool IsColor(string input)
     {
       if (input == null) return false;
@@ -49,6 +77,14 @@ namespace Nixill.GTFS.Parsing
     public static readonly LocalDatePattern DatePattern = LocalDatePattern.CreateWithInvariantCulture("uuuuMMdd");
     public static readonly Regex DateRegex = new Regex(@"^\d{8}$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
+    /// <summary>
+    ///   Returns a <see cref="LocalDate" /> if the input is a valid date.
+    ///   Otherwise, returns <c>null</c>.
+    /// </summary>
+    /// <remarks>
+    ///   To be a valid date, the input must be in <c>YYYYMMDD</c> format,
+    ///   with no separators between the components.
+    /// </remarks>
     public static LocalDate? GetNullableDate(string input)
     {
       if (input == null) return null;
@@ -58,6 +94,16 @@ namespace Nixill.GTFS.Parsing
     }
     public static LocalDate? GetNullableDate(this GTFSPropertyCollection properties, string key) => GetNullableDate(properties[key]);
 
+    /// <summary>
+    ///   Returns a <see cref="LocalDate" />.
+    /// </summary>
+    /// <remarks>
+    ///   To be a valid date, the input must be in <c>YYYYMMDD</c> format,
+    ///   with no separators between the components.
+    /// </remarks>
+    /// <exception cref="Exception">
+    ///   <c>input</c> is not a valid date.
+    /// </exception>
     public static LocalDate GetDate(string input, LocalDate? def = null)
     {
       ParseResult<LocalDate> res = DatePattern.Parse(input);
@@ -67,6 +113,13 @@ namespace Nixill.GTFS.Parsing
     }
     public static LocalDate GetDate(this GTFSPropertyCollection properties, string key, LocalDate? def = null) => GetDate(properties[key], def);
 
+    /// <summary>
+    ///   Returns whether or not the input is a valid <see cref="LocalDate" />.
+    /// </summary>
+    /// <remarks>
+    ///   To be a valid date, the input must be in <c>YYYYMMDD</c> format,
+    ///   with no separators between the components.
+    /// </remarks>
     public static bool IsDate(string input)
     {
       if (input == null) return false;
@@ -85,6 +138,14 @@ namespace Nixill.GTFS.Parsing
     public static readonly DurationPattern TimePattern = DurationPattern.CreateWithInvariantCulture("H:mm:ss");
     public static readonly Regex TimeRegex = new Regex(@"\d+:\d\d:\d\d", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
+    /// <summary>
+    ///   Returns a <see cref="Duration" /> from the input, if it's a
+    ///   valid time. Otherwise, returns null.
+    /// </summary>
+    /// <remarks>
+    ///   To be a valid time, the input must be in <c>H:mm:ss</c> or
+    ///   <c>HH:mm:ss</c> format.
+    /// </remarks>
     public static Duration? GetNullableTime(string input)
     {
       if (input == null) return null;
@@ -94,6 +155,16 @@ namespace Nixill.GTFS.Parsing
     }
     public static Duration? GetNullableTime(this GTFSPropertyCollection properties, string key) => GetNullableTime(properties[key]);
 
+    /// <summary>
+    ///   Returns a <see cref="Duration" /> from the input.
+    /// </summary>
+    /// <remarks>
+    ///   To be a valid time, the input must be in <c>H:mm:ss</c> or
+    ///   <c>HH:mm:ss</c> format.
+    /// </remarks>
+    /// <exception cref="Exception">
+    ///   <c>input</c> is not a valid time.
+    /// </exception>
     public static Duration GetTime(string input, Duration? def = null)
     {
       ParseResult<Duration> res = TimePattern.Parse(input);
@@ -103,6 +174,13 @@ namespace Nixill.GTFS.Parsing
     }
     public static Duration GetTime(this GTFSPropertyCollection properties, string key, Duration? def = null) => GetTime(properties[key], def);
 
+    /// <summary>
+    ///   Returns whether or not the input is a valid <see cref="Duration" />.
+    /// </summary>
+    /// <remarks>
+    ///   To be a valid time, the input must be in <c>H:mm:ss</c> or
+    ///   <c>HH:mm:ss</c> format.
+    /// </remarks>
     public static bool IsTime(string input)
     {
       if (input == null) return false;
@@ -117,43 +195,38 @@ namespace Nixill.GTFS.Parsing
     //   values. 
     public static readonly IDateTimeZoneProvider TimezoneProvider = DateTimeZoneProviders.Tzdb;
 
+    /// <summary>
+    ///   Returns the identified <see cref="DateTimeZone" />, or
+    ///   <c>null</c> if there is no such zone.
+    /// </summary>
     public static DateTimeZone GetTimeZone(string input) => TimezoneProvider.GetZoneOrNull(input);
     public static DateTimeZone GetTimeZone(this GTFSPropertyCollection properties, string key) => GetTimeZone(properties[key]);
 
     // Numeric parsers
-    public static bool TryInt(string input, out int result)
-    {
-      result = 0;
-      if (input == null) return false;
-      return int.TryParse(input, out result);
-    }
-    public static bool TryInt(this GTFSPropertyCollection properties, string key, out int result) => TryInt(properties[key], out result);
-
-    public static bool TryDecimal(string input, out decimal result)
-    {
-      result = 0;
-      if (input == null) return false;
-      return decimal.TryParse(input, out result);
-    }
-    public static bool TryDecimal(this GTFSPropertyCollection properties, string key, out decimal result) => TryDecimal(properties[key], out result);
-
-    public static bool TryDouble(string input, out double result)
-    {
-      result = 0;
-      if (input == null) return false;
-      return double.TryParse(input, out result);
-    }
-    public static bool TryDouble(this GTFSPropertyCollection properties, string key, out double result) => TryDouble(properties[key], out result);
-
-    public static bool IsInt(string input) => TryInt(input, out int placeholder);
+    /// <summary>
+    ///   Returns whether or not the input is a valid <see cref="int" />.
+    /// </summary>
+    public static bool IsInt(string input) => int.TryParse(input, out int placeholder);
     public static bool IsInt(this GTFSPropertyCollection properties, string key) => IsInt(properties[key]);
 
-    public static bool IsDecimal(string input) => TryDecimal(input, out decimal placeholder);
+    /// <summary>
+    ///   Returns whether or not the input is a valid <see cref="decimal" />.
+    /// </summary>
+    public static bool IsDecimal(string input) => decimal.TryParse(input, out decimal placeholder);
     public static bool IsDecimal(this GTFSPropertyCollection properties, string key) => IsDecimal(properties[key]);
 
-    public static bool IsDouble(string input) => TryDouble(input, out double placeholder);
+    /// <summary>
+    ///   Returns whether or not the input is a valid <see cref="double" />.
+    /// </summary>
+    public static bool IsDouble(string input) => double.TryParse(input, out double placeholder);
     public static bool IsDouble(this GTFSPropertyCollection properties, string key) => IsDouble(properties[key]);
 
+    /// <summary>
+    ///   Returns the input as an <see cref="int" />.
+    /// </summary>
+    /// <exception cref="ArgumentException">
+    ///   <c>input</c> is not a valid <see cref="int" />.
+    /// </exception>
     public static int GetInt(this GTFSPropertyCollection properties, string key, int? def = null)
     {
       string input = properties[key];
@@ -163,6 +236,12 @@ namespace Nixill.GTFS.Parsing
       throw new ArgumentException($"{input} could not be cast to a number.");
     }
 
+    /// <summary>
+    ///   Returns the input as an <see cref="decimal" />.
+    /// </summary>
+    /// <exception cref="ArgumentException">
+    ///   <c>input</c> is not a valid <see cref="decimal" />.
+    /// </exception>
     public static decimal GetDecimal(this GTFSPropertyCollection properties, string key, decimal? def = null)
     {
       string input = properties[key];
@@ -172,6 +251,12 @@ namespace Nixill.GTFS.Parsing
       throw new ArgumentException($"{input} could not be cast to a number.");
     }
 
+    /// <summary>
+    ///   Returns the input as an <see cref="double" />.
+    /// </summary>
+    /// <exception cref="ArgumentException">
+    ///   <c>input</c> is not a valid <see cref="double" />.
+    /// </exception>
     public static double GetDouble(this GTFSPropertyCollection properties, string key, double? def = null)
     {
       string input = properties[key];
@@ -181,85 +266,113 @@ namespace Nixill.GTFS.Parsing
       throw new ArgumentException($"{input} could not be cast to a number.");
     }
 
+    /// <summary>
+    ///   Returns the input as an <see cref="int" />, if it's a valid
+    ///   input. Otherwise, returns <c>null</c>.
+    /// </summary>
     public static int? GetNullableInt(string input)
     {
-      if (TryInt(input, out int result)) return result;
+      if (int.TryParse(input, out int result)) return result;
       else return null;
     }
     public static int? GetNullableInt(this GTFSPropertyCollection properties, string key) => GetNullableInt(properties[key]);
 
+    /// <summary>
+    ///   Returns the input as a <see cref="decimal" />, if it's a valid
+    ///   input. Otherwise, returns <c>null</c>.
+    /// </summary>
     public static decimal? GetNullableDecimal(string input)
     {
-      if (TryDecimal(input, out decimal result)) return result;
+      if (decimal.TryParse(input, out decimal result)) return result;
       else return null;
     }
     public static decimal? GetNullableDecimal(this GTFSPropertyCollection properties, string key) => GetNullableDecimal(properties[key]);
 
+    /// <summary>
+    ///   Returns the input as a <see cref="double" />, if it's a valid
+    ///   input. Otherwise, returns <c>null</c>.
+    /// </summary>
     public static double? GetNullableDouble(string input)
     {
-      if (TryDouble(input, out double result)) return result;
+      if (double.TryParse(input, out double result)) return result;
       else return null;
     }
     public static double? GetNullableDouble(this GTFSPropertyCollection properties, string key) => GetNullableDouble(properties[key]);
 
-    public static bool TryNonNegativeInt(string input, out int result)
-    {
-      if (TryInt(input, out result) && result >= 0) return true;
-      else return false;
-    }
-    public static bool TryNonNegativeInt(this GTFSPropertyCollection properties, string key, out int result) => TryNonNegativeInt(properties[key], out result);
-
-    public static bool TryNonNegativeDecimal(string input, out decimal result)
-    {
-      if (TryDecimal(input, out result) && result >= 0) return true;
-      else return false;
-    }
-    public static bool TryNonNegativeDecimal(this GTFSPropertyCollection properties, string key, out decimal result) => TryNonNegativeDecimal(properties[key], out result);
-
-    public static bool TryNonNegativeDouble(string input, out double result)
-    {
-      if (TryDouble(input, out result) && result >= 0) return true;
-      else return false;
-    }
-    public static bool TryNonNegativeDouble(this GTFSPropertyCollection properties, string key, out double result) => TryNonNegativeDouble(properties[key], out result);
-
+    /// <summary>
+    ///   Returns the input as an <see cref="int" />, if it's valid and
+    ///   non-negative. Otherwise, returns <c>null</c>.
+    /// </summary>
     public static int? GetNullableNonNegativeInt(string input)
     {
-      if (TryInt(input, out int result) && result >= 0) return result;
+      if (int.TryParse(input, out int result) && result >= 0) return result;
       else return null;
     }
     public static int? GetNullableNonNegativeInt(this GTFSPropertyCollection properties, string key) => GetNullableNonNegativeInt(properties[key]);
 
+    /// <summary>
+    ///   Returns the input as a <see cref="decimal" />, if it's valid and
+    ///   non-negative. Otherwise, returns <c>null</c>.
+    /// </summary>
     public static decimal? GetNullableNonNegativeDecimal(string input)
     {
-      if (TryDecimal(input, out decimal result) && result >= 0) return result;
+      if (decimal.TryParse(input, out decimal result) && result >= 0) return result;
       else return null;
     }
     public static decimal? GetNullableNonNegativeDecimal(this GTFSPropertyCollection properties, string key) => GetNullableNonNegativeDecimal(properties[key]);
 
+    /// <summary>
+    ///   Returns the input as a <see cref="double" />, if it's valid and
+    ///   non-negative. Otherwise, returns <c>null</c>.
+    /// </summary>
     public static double? GetNullableNonNegativeDouble(string input)
     {
-      if (TryDouble(input, out double result) && result >= 0) return result;
+      if (double.TryParse(input, out double result) && result >= 0) return result;
       else return null;
     }
     public static double? GetNullableNonNegativeDouble(this GTFSPropertyCollection properties, string key) => GetNullableNonNegativeDouble(properties[key]);
 
-    public static bool IsNonNegativeInt(string input) => TryNonNegativeInt(input, out int placeholder);
+    /// <summary>
+    ///   Returns whether or not the input is a valid, non-negative
+    ///   <see cref="int" />.
+    /// </summary>
+    public static bool IsNonNegativeInt(string input) => int.TryParse(input, out int placeholder) && placeholder >= 0;
     public static bool IsNonNegativeInt(this GTFSPropertyCollection properties, string key) => IsNonNegativeInt(properties[key]);
 
-    public static bool IsNonNegativeDecimal(string input) => TryNonNegativeDecimal(input, out decimal placeholder);
+    /// <summary>
+    ///   Returns whether or not the input is a valid, non-negative
+    ///   <see cref="decimal" />.
+    /// </summary>
+    public static bool IsNonNegativeDecimal(string input) => decimal.TryParse(input, out decimal placeholder) && placeholder >= 0;
     public static bool IsNonNegativeDecimal(this GTFSPropertyCollection properties, string key) => IsNonNegativeDecimal(properties[key]);
 
-    public static bool IsNonNegativeDouble(string input) => TryNonNegativeDouble(input, out double placeholder);
+    /// <summary>
+    ///   Returns whether or not the input is a valid, non-negative
+    ///   <see cref="double" />.
+    /// </summary>
+    public static bool IsNonNegativeDouble(string input) => double.TryParse(input, out double placeholder) && placeholder >= 0;
     public static bool IsNonNegativeDouble(this GTFSPropertyCollection properties, string key) => IsNonNegativeDouble(properties[key]);
 
     // Misc
+    /// <summary>
+    ///   Returns whether or not the input is <c>1</c>.
+    /// </summary>
+    /// <remarks>
+    ///   Returns <c>false</c> for any other input, even <c>null</c>.
+    /// </remarks>
     public static bool GetBool(string input)
     {
       return input == "1";
     }
     public static bool GetBool(this GTFSPropertyCollection properties, string key) => GetBool(properties[key]);
 
+    /// <summary>
+    ///   Returns whether the input is <c>0</c> (<c>false</c>) or <c>1</c>
+    ///   (<c>true</c>).
+    /// </summary>
+    /// <remarks>
+    ///   Returns <c>null</c> for any other input.
+    /// </remarks>
     public static bool? GetNullableBool(string input)
     {
       if (input == "1") return true;
@@ -268,6 +381,10 @@ namespace Nixill.GTFS.Parsing
     }
     public static bool? GetNullableBool(this GTFSPropertyCollection properties, string key) => GetNullableBool(properties[key]);
 
+    /// <summary>
+    ///   Returns whether the input is <c>0</c> or <c>1</c> (<c>true</c>)
+    ///   or anything else (<c>false</c>).
+    /// </summary>
     public static bool IsBool(string input)
     {
       return (input == "0" || input == "1");

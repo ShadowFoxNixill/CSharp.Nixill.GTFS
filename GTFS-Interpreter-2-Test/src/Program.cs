@@ -1,10 +1,10 @@
 ﻿using System;
 using Nixill.GTFS;
 using Nixill.GTFS.Entities;
-using Nixill.GTFS.Entities.Extensions;
 using NodaTime.Text;
 using System.Linq;
 using Nixill.GTFS.Parsing;
+using System.Collections.Generic;
 
 namespace Nixill.Testing
 {
@@ -30,13 +30,13 @@ namespace Nixill.Testing
     {
       LocalDatePattern ptn = LocalDatePattern.CreateWithInvariantCulture("ddd uuuu-MM-dd");
 
-      foreach (Calendar cal in feed.Calendars)
+      foreach ((Calendar Cal, IEnumerable<CalendarDate> CalDates) cal in feed.Calendars)
       {
-        Console.WriteLine($"Calendar: {cal.ID}");
-        Console.WriteLine($"Provides service on: {DayMasks.Get(cal.Mask)}");
-        Console.WriteLine($"Active {ptn.Format(cal.StartDate)} through {ptn.Format(cal.EndDate)}");
+        Console.WriteLine($"Calendar: {cal.Cal.ID}");
+        Console.WriteLine($"Provides service on: {DayMasks.Get(cal.Cal.Mask)}");
+        Console.WriteLine($"Active {ptn.Format(cal.Cal.StartDate)} through {ptn.Format(cal.Cal.EndDate)}");
         Console.WriteLine("Exceptions:");
-        foreach (CalendarDate date in cal.Exceptions())
+        foreach (CalendarDate date in cal.CalDates)
         {
           Console.WriteLine($"  {ptn.Format(date.Date)}: {date.ExceptionType}");
         }

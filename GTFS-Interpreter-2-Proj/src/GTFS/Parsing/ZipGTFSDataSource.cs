@@ -10,19 +10,30 @@ using Nixill.Utils;
 
 namespace Nixill.GTFS.Parsing
 {
+  /// <summary>
+  ///   An IGTFSDataSource using a zip archive as its backend.
+  /// </summary>
   public class ZipGTFSDataSource : IGTFSDataSource
   {
     private ZipArchive Archive;
 
+    /// <summary>
+    ///   Creates a <c>ZipGTFSDataSource</c> using an existing
+    ///   <c>ZipArchive</c> object.
+    /// </summary>
     public ZipGTFSDataSource(ZipArchive archive)
     {
       Archive = archive;
     }
 
+    /// <summary>
+    ///   Creates a <c>ZipGTFSDataSource</c> using a new
+    ///   <see cref="ZipArchive" /> object referring to <c>archiveName</c>.
+    /// </summary>
     public ZipGTFSDataSource(string archiveName) : this(ZipFile.OpenRead(archiveName))
     { }
 
-    public IEnumerable<T> GetObjects<T>(GTFSFeed feed, string table, GTFSEntityFactory<T> factory, List<GTFSUnparsedEntity> unparsed) where T : GTFSEntity
+    public IEnumerable<T> GetObjects<T>(GTFSFeed feed, string table, GTFSEntityFactory<T> factory, List<GTFSUnparsedEntity> unparsed = null) where T : GTFSEntity
     {
       // Get the file:
       ZipArchiveEntry file = Archive.GetEntry(table);
@@ -58,7 +69,8 @@ namespace Nixill.GTFS.Parsing
         }
         catch (Exception ex)
         {
-          GTFSUnparsedEntity ent = new GTFSUnparsedEntity(feed, props, ex);
+          if (unparsed == null) throw ex;
+          GTFSUnparsedEntity ent = new GTFSUnparsedEntity(feed, new GTFSPropertyCollection(props), ex);
           unparsed.Add(ent);
           continue;
         }

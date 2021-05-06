@@ -17,13 +17,13 @@ namespace Nixill.GTFS.Entities
   {
     /// <summary>Start service day for the service interval.</summary>
     /// <remarks>
-    ///   This corresponds to the <c>start_date</c> property of the entity.
+    ///   This is the value of the <c>start_date</c> property of the entity.
     /// </remarks>
     public LocalDate StartDate => Properties.GetDate("start_date");
 
     /// <summary>End service day for the service interval.</summary>
     /// <remarks>
-    ///   This corresponds to the <c>end_date</c> property of the entity.
+    ///   This is the value of the <c>end_date</c> property of the entity.
     ///   This service day is included in the interval.
     /// </remarks>
     public LocalDate EndDate => Properties.GetDate("end_date");
@@ -34,7 +34,7 @@ namespace Nixill.GTFS.Entities
     ///   <c>end_date</c> fields.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>monday</c> property of the entity,
+    ///   This is the value of the <c>monday</c> property of the entity,
     ///   specifically returning whether or not that property has a value
     ///   of <c>1</c>. Exceptions on individual dates may be listed in the
     ///   <c>calendar_dates</c> table.
@@ -47,7 +47,7 @@ namespace Nixill.GTFS.Entities
     ///   <c>end_date</c> fields.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>tuesday</c> property of the entity,
+    ///   This is the value of the <c>tuesday</c> property of the entity,
     ///   specifically returning whether or not that property has a value
     ///   of <c>1</c>. Exceptions on individual dates may be listed in the
     ///   <c>calendar_dates</c> table.
@@ -60,10 +60,10 @@ namespace Nixill.GTFS.Entities
     ///   <c>end_date</c> fields.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>wednesday</c> property of the entity,
-    ///   specifically returning whether or not that property has a value
-    ///   of <c>1</c>. Exceptions on individual dates may be listed in the
-    ///   <c>calendar_dates</c> table.
+    ///   This is the value of the <c>wednesday</c> property of the
+    ///   entity, specifically returning whether or not that property has
+    ///   a value of <c>1</c>. Exceptions on individual dates may be
+    ///   listed in the <c>calendar_dates</c> table.
     /// </remarks>
     public bool Wednesday => Properties["wednesday"] == "1";
 
@@ -73,7 +73,7 @@ namespace Nixill.GTFS.Entities
     ///   <c>end_date</c> fields.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>thursday</c> property of the entity,
+    ///   This is the value of the <c>thursday</c> property of the entity,
     ///   specifically returning whether or not that property has a value
     ///   of <c>1</c>. Exceptions on individual dates may be listed in the
     ///   <c>calendar_dates</c> table.
@@ -86,7 +86,7 @@ namespace Nixill.GTFS.Entities
     ///   <c>end_date</c> fields.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>friday</c> property of the entity,
+    ///   This is the value of the <c>friday</c> property of the entity,
     ///   specifically returning whether or not that property has a value
     ///   of <c>1</c>. Exceptions on individual dates may be listed in the
     ///   <c>calendar_dates</c> table.
@@ -99,7 +99,7 @@ namespace Nixill.GTFS.Entities
     ///   <c>end_date</c> fields.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>saturday</c> property of the entity,
+    ///   This is the value of the <c>saturday</c> property of the entity,
     ///   specifically returning whether or not that property has a value
     ///   of <c>1</c>. Exceptions on individual dates may be listed in the
     ///   <c>calendar_dates</c> table.
@@ -112,7 +112,7 @@ namespace Nixill.GTFS.Entities
     ///   <c>end_date</c> fields.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>sunday</c> property of the entity,
+    ///   This is the value of the <c>sunday</c> property of the entity,
     ///   specifically returning whether or not that property has a value
     ///   of <c>1</c>. Exceptions on individual dates may be listed in the
     ///   <c>calendar_dates</c> table.
@@ -123,7 +123,7 @@ namespace Nixill.GTFS.Entities
     ///   Returns the days-of-week of service as a bitfield.
     /// </summary>
     /// <remarks>
-    ///   0x1 corresponds to Monday, 0x2 to Tuesday, etc. to 0x40 for Sunday.
+    ///   0x1 is the value of Monday, 0x2 to Tuesday, etc. to 0x40 for Sunday.
     /// </remarks>
     public int Mask =>
       (Monday ? 1 : 0) +
@@ -174,6 +174,9 @@ namespace Nixill.GTFS.Entities
       if (!properties.IsDate("start_date") || !properties.IsDate("end_date")) throw new InvalidDataException("Calendars must have a date range.");
     }
 
+    /// <summary>Creates a new <c>Calendar</c>.</summary>
+    /// <param name="feed">The parent GTFS feed.</param>
+    /// <param name="properties">The property collection.</param>
     public static Calendar Factory(GTFSFeed feed, IEnumerable<(string, string)> properties) => new Calendar(feed, new GTFSPropertyCollection(properties));
   }
 }

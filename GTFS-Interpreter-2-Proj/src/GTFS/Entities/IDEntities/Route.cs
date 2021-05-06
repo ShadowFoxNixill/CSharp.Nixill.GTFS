@@ -21,9 +21,9 @@ namespace Nixill.GTFS.Entities
     ///   The ID of the agency for the route.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>agency_id</c> property of the entity.
-    ///   If it's is never specified within the feed, this property will
-    ///   be equal to the empty string.
+    ///   This is the value of the <c>agency_id</c> property of the
+    ///   entity. If it's is never specified within the feed, this
+    ///   property will be equal to the empty string.
     /// </remarks>
     public string AgencyID => Properties["agency_id"];
 
@@ -31,7 +31,7 @@ namespace Nixill.GTFS.Entities
     ///   Short name of a route.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>route_short_name</c> property of the
+    ///   This is the value of the <c>route_short_name</c> property of the
     ///   entity. This will often be a short, abstract identifier like
     ///   "32", "100X", or "Green" that riders use to identify a route,
     ///   but which doesn't give any indication of what places the route
@@ -44,7 +44,7 @@ namespace Nixill.GTFS.Entities
     ///   Full name of a route.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>route_long_name</c> property of the
+    ///   This is the value of the <c>route_long_name</c> property of the
     ///   entity. This name is generally more descriptive than the 
     ///   <c>ShortName</c> and often includes the route's destination or
     ///   stop. Either <c>ShortName</c> or <c>LongName</c> must be
@@ -56,7 +56,7 @@ namespace Nixill.GTFS.Entities
     ///   Description of a route that provides useful, quality information.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>route_desc</c> property of the entity.
+    ///   This is the value of the <c>route_desc</c> property of the entity.
     /// </remarks>
     /// <example>
     ///   "A" trains operate between Inwood-207 St, Manhattan and Far
@@ -71,7 +71,7 @@ namespace Nixill.GTFS.Entities
     ///   Indicates the type of transportation used on a route.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>route_type</c> property of the entity.
+    ///   This is the value of the <c>route_type</c> property of the entity.
     /// </remarks>
     public RouteType Type => (RouteType)Properties.GetInt("route_type");
 
@@ -79,8 +79,9 @@ namespace Nixill.GTFS.Entities
     ///   URL of a web page about the particular route.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>route_url</c> property of the entity.
-    ///   It should be different from the <see cref="Agency.Url" /> value.
+    ///   This is the value of the <c>route_url</c> property of the
+    ///   entity. It should be different from the
+    ///   <see cref="Agency.Url" /> value.
     /// </remarks>
     public string Url => Properties["route_url"];
 
@@ -88,7 +89,7 @@ namespace Nixill.GTFS.Entities
     ///   Route color designation that matches public facing material.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>route_color</c> property of the
+    ///   This is the value of the <c>route_color</c> property of the
     ///   entity. It defaults to <see cref="Color.White" /> when empty.
     ///   The color difference between RouteColor and
     ///   <see cref="TextColor" /> should provide sufficient contrast when
@@ -101,7 +102,7 @@ namespace Nixill.GTFS.Entities
     ///   <see cref="RouteColor" />.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>route_text_color</c> property of the
+    ///   This is the value of the <c>route_text_color</c> property of the
     ///   entity. It defaults to <see cref="Color.Black" /> when empty.
     ///   The color difference between <see cref="RouteColor" /> and
     ///   TextColor should provide sufficient contrast when viewed on a
@@ -114,7 +115,7 @@ namespace Nixill.GTFS.Entities
     ///   customers.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>route_sort_order</c> property of the
+    ///   This is the value of the <c>route_sort_order</c> property of the
     ///   entity. Routes with smaller <c>SortOrder</c> values should be
     ///   displayed first.
     /// </remarks>
@@ -125,9 +126,9 @@ namespace Nixill.GTFS.Entities
     ///   along the vehicle’s travel path.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>continuous_pickup</c> property of the
-    ///   entity. The path is described by shapes.txt on every trip of the
-    ///   route. The default continuous pickup behavior is
+    ///   This is the value of the <c>continuous_pickup</c> property of
+    ///   the entity. The path is described by shapes.txt on every trip of
+    ///   the route. The default continuous pickup behavior is
     ///   <see cref="PickupDropoffType.Unavalable" />, and the behavior
     ///   defined in <c>Route</c>s can be overridden in <c>StopTime</c>s.
     /// </remarks>
@@ -138,7 +139,7 @@ namespace Nixill.GTFS.Entities
     ///   anywhere along the vehicle’s travel path.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>continuous_drop_off</c> property of
+    ///   This is the value of the <c>continuous_drop_off</c> property of
     ///   the entity. The path is described by shapes.txt on every trip of
     ///   the route. The default continuous drop-off behavior is
     ///   <see cref="PickupDropoffType.Unavalable" />, and the behavior
@@ -162,6 +163,9 @@ namespace Nixill.GTFS.Entities
       if (!properties.IsInt("route_type")) throw new InvalidDataException("Routes must have a type.");
     }
 
+    /// <summary>Creates a new <c>Route</c>.</summary>
+    /// <param name="feed">The parent GTFS feed.</param>
+    /// <param name="properties">The property collection.</param>
     public static Route Factory(GTFSFeed feed, IEnumerable<(string, string)> properties) => new Route(feed, new GTFSPropertyCollection(properties, feed.DefaultAgencyId));
   }
 

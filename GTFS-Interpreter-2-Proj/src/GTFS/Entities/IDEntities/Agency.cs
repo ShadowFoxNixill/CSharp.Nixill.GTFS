@@ -28,19 +28,19 @@ namespace Nixill.GTFS.Entities
   {
     /// <summary>The full name of the agency.</summary>
     /// <remarks>
-    ///   This corresponds to the <c>agency_name</c> property of the entity.
+    ///   This is the value of the <c>agency_name</c> property of the entity.
     /// </remarks>
     public string Name => Properties["agency_name"];
 
     /// <summary>The URL of the agency's website.</summary>
     /// <remarks>
-    ///   This corresponds to the <c>agency_url</c> property of the entity.
+    ///   This is the value of the <c>agency_url</c> property of the entity.
     /// </remarks>
     public string Url => Properties["agency_url"];
 
     /// <summary>Primary language used by this transit agency.</summary>
     /// <remarks>
-    ///   This corresponds to the <c>agency_lang</c> property of the
+    ///   This is the value of the <c>agency_lang</c> property of the
     ///   entity. This field helps GTFS consumers choose capitalization
     ///   rules and other language-specific settings for the dataset.
     /// </remarks>
@@ -48,7 +48,7 @@ namespace Nixill.GTFS.Entities
 
     /// <summary>A voice telephone number for the specified agency.</summary>
     /// <remarks>
-    ///   This corresponds to the <c>agency_phone</c> property of the
+    ///   This is the value of the <c>agency_phone</c> property of the
     ///   entity. This field is a string value that presents the telephone
     ///   number as typical for the agency's service area. It can and
     ///   should contain punctuation marks to group the digits of the
@@ -63,7 +63,7 @@ namespace Nixill.GTFS.Entities
     ///   other fare instruments for that agency online.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>agency_fare_url</c> property of the
+    ///   This is the value of the <c>agency_fare_url</c> property of the
     ///   entity.
     /// </remarks>
     public string FareUrl => Properties["agency_fare_url"];
@@ -73,7 +73,7 @@ namespace Nixill.GTFS.Entities
     ///   service department.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>agency_email</c> property of the
+    ///   This is the value of the <c>agency_email</c> property of the
     ///   entity. This email address should be a direct contact point
     ///   where transit riders can reach a customer service representative
     ///   at the agency.
@@ -84,7 +84,7 @@ namespace Nixill.GTFS.Entities
     ///   Timezone where the transit agency is located.
     /// </summary>
     /// <remarks>
-    ///   This corresponds to the <c>agency_timezone</c> property of the
+    ///   This is the value of the <c>agency_timezone</c> property of the
     ///   entity. If multiple agencies are specified in the dataset, each
     ///   must have the same TimeZone.
     /// </remarks>
@@ -94,6 +94,9 @@ namespace Nixill.GTFS.Entities
     {
     }
 
+    /// <summary>Creates a new <c>Agency</c>.</summary>
+    /// <param name="feed">The parent GTFS feed.</param>
+    /// <param name="properties">The property collection.</param>
     public static Agency Factory(GTFSFeed feed, IEnumerable<(string, string)> properties)
     {
       return new Agency(feed, new GTFSPropertyCollection(properties, ""));

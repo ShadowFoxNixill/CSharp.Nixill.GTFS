@@ -18,7 +18,7 @@ namespace Nixill.GTFS.Entities
     ///   The first key of the entity.
     /// </summary>
     /// <remarks>
-    ///   See the class definition for which property corresponds to this key.
+    ///   See the class definition for which property is the value of this key.
     /// </remarks>
     public readonly TKey1 FirstKey;
 
@@ -26,7 +26,7 @@ namespace Nixill.GTFS.Entities
     ///   The second key of this entity.
     /// </summary>
     /// <remarks>
-    ///   See the class definition for which property corresponds to this key.
+    ///   See the class definition for which property is the value of this key.
     /// </remarks>
     public readonly TKey2 SecondKey;
 

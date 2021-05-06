@@ -11,7 +11,7 @@ namespace Nixill.GTFS.Entities
     ///   The ID of this entity, corresponding to a specific property.
     /// </summary>
     /// <remarks>
-    ///   See the class definition for which property corresponds to this key.
+    ///   See the class definition for which property is the value of this key.
     /// </remarks>
     public readonly string ID;
 
@@ -23,7 +23,7 @@ namespace Nixill.GTFS.Entities
     ///   The entity's collection of properties.
     /// </param>
     /// <param name="idName">
-    ///   Which property corresponds to the ID of the entity.
+    ///   Which property is the value of the ID of the entity.
     /// </param>
     protected GTFSIdentifiedEntity(GTFSFeed feed, GTFSPropertyCollection properties, string idName) : base(feed, properties)
     {
