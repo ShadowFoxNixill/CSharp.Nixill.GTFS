@@ -5,6 +5,7 @@ using NodaTime.Text;
 using System.Linq;
 using Nixill.GTFS.Parsing;
 using System.Collections.Generic;
+using Nixill.GTFS.Collections;
 
 namespace Nixill.Testing
 {
@@ -12,8 +13,16 @@ namespace Nixill.Testing
   {
     static void Main(string[] args)
     {
-      GTFSFeed feed = new GTFSFeed(new ZipGTFSDataSource("gtfs/ddot_gtfs.zip"));
-      StopTest(feed);
+      var source = new ZipGTFSDataSource("smart_gtfs.zip");
+      StopTimeTest(source);
+    }
+
+    private static void StopTimeTest(IGTFSDataSource source)
+    {
+      GTFSFeed feed = new GTFSFeed(source);
+      var stopTimes = new TwoKeyEntityCollection<string, int, StopTime>(source, "stop_times", StopTime.Factory);
+
+      
     }
 
     private static void StopTest(GTFSFeed feed)
@@ -26,7 +35,7 @@ namespace Nixill.Testing
       }
     }
 
-    static void CalendarTest(GTFSFeed feed)
+    private static void CalendarTest(GTFSFeed feed)
     {
       LocalDatePattern ptn = LocalDatePattern.CreateWithInvariantCulture("ddd uuuu-MM-dd");
 

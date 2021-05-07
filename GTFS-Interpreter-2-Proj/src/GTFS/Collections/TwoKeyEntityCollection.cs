@@ -25,11 +25,6 @@ namespace Nixill.GTFS.Collections
     private List<GTFSUnparsedEntity> Unparsed;
 
     /// <summary>
-    ///   The <see cref="GTFSFeed" /> from which this collection was made.
-    /// </summary>
-    public readonly GTFSFeed Feed;
-
-    /// <summary>
     ///   The number of entities within this collection.
     /// </summary>
     public int Count => Dict.Count;
@@ -38,13 +33,12 @@ namespace Nixill.GTFS.Collections
     ///   Creates a new TwoKeyEntityCollection from the given table in the
     ///   given feed.
     /// </summary>
-    public TwoKeyEntityCollection(GTFSFeed feed, string tableName, GTFSEntityFactory<TEntity> factory)
+    public TwoKeyEntityCollection(IGTFSDataSource source, string tableName, GTFSEntityFactory<TEntity> factory)
     {
       Dict = new Dictionary<(TKey1, TKey2), TEntity>();
       Unparsed = new List<GTFSUnparsedEntity>();
-      Feed = feed;
 
-      foreach (TEntity item in feed.DataSource.GetObjects(Feed, tableName, factory, Unparsed))
+      foreach (TEntity item in source.GetObjects(tableName, factory, Unparsed))
       {
         Dict.Add((item.FirstKey, item.SecondKey), item);
       }
@@ -54,11 +48,10 @@ namespace Nixill.GTFS.Collections
     ///   Creates a new TwoKeyEntityCollection from the given collection
     ///   of existing objects.
     /// </summary>
-    public TwoKeyEntityCollection(GTFSFeed feed, ICollection<TEntity> objects)
+    public TwoKeyEntityCollection(ICollection<TEntity> objects)
     {
       Dict = new Dictionary<(TKey1, TKey2), TEntity>();
       Unparsed = new List<GTFSUnparsedEntity>();
-      Feed = feed;
 
       foreach (TEntity item in objects)
       {

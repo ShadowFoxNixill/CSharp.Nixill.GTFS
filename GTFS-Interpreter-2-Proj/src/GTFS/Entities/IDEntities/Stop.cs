@@ -198,21 +198,15 @@ namespace Nixill.GTFS.Entities
     /// </remarks>
     public string PlatformCode => Properties["platform_code"];
 
-    /// <summary>
-    ///   The parent station referred to by <see cref="ParentStationId" />.
-    /// </summary>
-    public Stop ParentStation => Feed.Stops[ParentStationId];
-
-    private Stop(GTFSFeed feed, GTFSPropertyCollection properties) : base(feed, properties, "stop_id")
+    private Stop(GTFSPropertyCollection properties) : base(properties, "stop_id")
     {
     }
 
     /// <summary>Creates a new <c>Stop</c>.</summary>
-    /// <param name="feed">The parent GTFS feed.</param>
     /// <param name="properties">The property collection.</param>
-    public static Stop Factory(GTFSFeed feed, IEnumerable<(string, string)> properties)
+    public static Stop Factory(IEnumerable<(string, string)> properties)
     {
-      return new Stop(feed, new GTFSPropertyCollection(properties));
+      return new Stop(new GTFSPropertyCollection(properties));
     }
   }
 }

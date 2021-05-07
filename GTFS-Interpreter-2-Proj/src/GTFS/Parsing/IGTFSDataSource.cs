@@ -21,6 +21,6 @@ namespace Nixill.GTFS.Parsing
     ///     up the call stack).
     ///   </para>
     /// </remarks>
-    public IEnumerable<T> GetObjects<T>(GTFSFeed feed, string table, GTFSEntityFactory<T> factory, List<GTFSUnparsedEntity> unparsed = null) where T : GTFSEntity;
+    public IEnumerable<T> GetObjects<T>(string table, GTFSEntityFactory<T> factory, List<GTFSUnparsedEntity> unparsed = null) where T : GTFSEntity;
   }
 }

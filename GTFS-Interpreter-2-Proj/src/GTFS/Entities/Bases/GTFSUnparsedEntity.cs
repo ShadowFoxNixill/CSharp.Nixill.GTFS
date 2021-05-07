@@ -8,7 +8,7 @@ namespace Nixill.GTFS.Entities
   {
     public readonly Exception Exception;
 
-    public GTFSUnparsedEntity(GTFSFeed feed, GTFSPropertyCollection properties, Exception ex) : base(feed, properties)
+    public GTFSUnparsedEntity(GTFSPropertyCollection properties, Exception ex) : base(properties)
     {
       Exception = ex;
     }

@@ -90,16 +90,15 @@ namespace Nixill.GTFS.Entities
     /// </remarks>
     public DateTimeZone TimeZone => Properties.GetTimeZone("agency_timezone");
 
-    private Agency(GTFSFeed feed, GTFSPropertyCollection properties) : base(feed, properties, "agency_id")
+    private Agency(GTFSPropertyCollection properties) : base(properties, "agency_id")
     {
     }
 
     /// <summary>Creates a new <c>Agency</c>.</summary>
-    /// <param name="feed">The parent GTFS feed.</param>
     /// <param name="properties">The property collection.</param>
-    public static Agency Factory(GTFSFeed feed, IEnumerable<(string, string)> properties)
+    public static Agency Factory(IEnumerable<(string, string)> properties)
     {
-      return new Agency(feed, new GTFSPropertyCollection(properties, ""));
+      return new Agency(new GTFSPropertyCollection(properties, ""));
     }
   }
 }

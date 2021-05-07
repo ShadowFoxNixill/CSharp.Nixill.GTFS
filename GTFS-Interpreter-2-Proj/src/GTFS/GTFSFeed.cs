@@ -25,7 +25,7 @@ namespace Nixill.GTFS
     ///   agencies, this default shouldn't be used, but will return an
     ///   arbitrarily selected ID.
     /// </summary>
-    public string DefaultAgencyId => Agencies.First().ID;
+    public string DefaultAgencyID { get; internal set; }
 
     /// <summary>
     ///   The collection of <see cref="Agency" />s within the feed.
@@ -60,11 +60,12 @@ namespace Nixill.GTFS
     {
       DataSource = source;
 
-      Agencies = new IDEntityCollection<Agency>(this, "agency", Agency.Factory);
-      Routes = new IDEntityCollection<Route>(this, "routes", Route.Factory);
-      Calendars = new GTFSCalendarCollection(this);
-      Stops = new IDEntityCollection<Stop>(this, "stops", Stop.Factory);
-      Trips = new IDEntityCollection<Trip>(this, "trips", Trip.Factory);
+      Agencies = new IDEntityCollection<Agency>(DataSource, "agency", Agency.Factory);
+      DefaultAgencyID = Agencies.First().ID;
+      Routes = new IDEntityCollection<Route>(DataSource, "routes", Route.GetFactory(DefaultAgencyID));
+      Calendars = new GTFSCalendarCollection(DataSource);
+      Stops = new IDEntityCollection<Stop>(DataSource, "stops", Stop.Factory);
+      Trips = new IDEntityCollection<Trip>(DataSource, "trips", Trip.Factory);
     }
   }
 }

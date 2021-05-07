@@ -33,7 +33,7 @@ namespace Nixill.GTFS.Parsing
     public ZipGTFSDataSource(string archiveName) : this(ZipFile.OpenRead(archiveName))
     { }
 
-    public IEnumerable<T> GetObjects<T>(GTFSFeed feed, string table, GTFSEntityFactory<T> factory, List<GTFSUnparsedEntity> unparsed = null) where T : GTFSEntity
+    public IEnumerable<T> GetObjects<T>(string table, GTFSEntityFactory<T> factory, List<GTFSUnparsedEntity> unparsed = null) where T : GTFSEntity
     {
       // Get the file:
       ZipArchiveEntry file = Archive.GetEntry(table);
@@ -65,12 +65,12 @@ namespace Nixill.GTFS.Parsing
 
         try
         {
-          obj = factory(feed, props);
+          obj = factory(props);
         }
         catch (Exception ex)
         {
           if (unparsed == null) throw ex;
-          GTFSUnparsedEntity ent = new GTFSUnparsedEntity(feed, new GTFSPropertyCollection(props), ex);
+          GTFSUnparsedEntity ent = new GTFSUnparsedEntity(new GTFSPropertyCollection(props), ex);
           unparsed.Add(ent);
           continue;
         }

@@ -58,43 +58,16 @@ namespace Nixill.GTFS.Entities
     /// </remarks>
     public bool IsRemoved => ExceptionType == ExceptionType.Removed;
 
-    private CalendarDate(GTFSFeed feed, GTFSPropertyCollection properties) : base(feed, properties, properties["service_id"], properties.GetDate("date"))
+    private CalendarDate(GTFSPropertyCollection properties) : base(properties, properties["service_id"], properties.GetDate("date"))
     {
       if (!properties.IsInt("exception_type")) throw new InvalidDataException("Calendar dates must have exception types.");
     }
 
     /// <summary>Creates a new <c>CalendarDate</c>.</summary>
-    /// <param name="feed">The parent GTFS feed.</param>
     /// <param name="properties">The property collection.</param>
-    public static CalendarDate Factory(GTFSFeed feed, IEnumerable<(string, string)> properties)
+    public static CalendarDate Factory(IEnumerable<(string, string)> properties)
     {
-      return new CalendarDate(feed, new GTFSPropertyCollection(properties));
-    }
-  }
-
-  namespace Extensions
-  {
-    public static class CalendarDateExtensions
-    {
-      /// <summary>
-      ///   The list of exceptions to this <c>Calendar</c>.
-      /// </summary>
-      public static IEnumerable<CalendarDate> Exceptions(this Calendar cal) =>
-        cal.Feed.Calendars.CalendarDates.WithFirstKey(cal.ID);
-
-      /// <summary>
-      ///   Whether or not service is available on this date.
-      /// </summary>
-      /// <remarks>
-      ///   This method considers both this <c>Calendar</c> object as well
-      ///   as the <c>CalendarDate</c> exceptions in the feed.
-      /// </remarks>
-      public static bool TotalServiceOn(this Calendar cal, LocalDate date)
-      {
-        CalendarDate dateException = cal.Feed.Calendars.CalendarDates[cal.ID, date];
-        if (dateException != null) return dateException.IsAdded;
-        return cal.ServiceOn(date);
-      }
+      return new CalendarDate(new GTFSPropertyCollection(properties));
     }
   }
 }

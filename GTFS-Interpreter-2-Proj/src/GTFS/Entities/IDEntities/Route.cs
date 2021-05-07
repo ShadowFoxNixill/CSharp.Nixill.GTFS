@@ -147,36 +147,20 @@ namespace Nixill.GTFS.Entities
     /// </remarks>
     public PickupDropoffType ContinuousDropoff => (PickupDropoffType)Properties.GetInt("continuous_drop_off", 1);
 
-    /// <summary>
-    ///   Agency for the specified route.
-    /// </summary>
-    /// <remarks>
-    ///   This is the <see cref="Agency" /> whose ID is specified by
-    ///   <c>agency_id</c>.
-    /// </remarks>
-    public Agency Agency => Feed.Agencies[AgencyID];
-
-    private Route(GTFSFeed feed, GTFSPropertyCollection properties) : base(feed, properties, "route_id")
+    private Route(GTFSPropertyCollection properties) : base(properties, "route_id")
     {
       if (!properties.ContainsKey("route_short_name") && !properties.ContainsKey("route_long_name"))
         throw new InvalidDataException("Routes must have either a long name or a short name.");
       if (!properties.IsInt("route_type")) throw new InvalidDataException("Routes must have a type.");
     }
 
-    /// <summary>Creates a new <c>Route</c>.</summary>
-    /// <param name="feed">The parent GTFS feed.</param>
-    /// <param name="properties">The property collection.</param>
-    public static Route Factory(GTFSFeed feed, IEnumerable<(string, string)> properties) => new Route(feed, new GTFSPropertyCollection(properties, feed.DefaultAgencyId));
-  }
-
-  namespace Extensions
-  {
-    public static class RouteAgencyExtensions
+    /// <summary>Gets the factory to create a new <c>Route</c>.</summary>
+    /// <param name="defaultAgency">
+    ///   The <c>agency_id</c> to use by default.
+    /// </param>
+    public static GTFSEntityFactory<Route> GetFactory(string defaultAgency)
     {
-      /// <summary>
-      ///   Returns all the <c>Route</c>s under this <c>Agency</c>.
-      /// </summary>
-      public static IEnumerable<Route> Routes(this Agency agency) => agency.Feed.Routes.Where(x => x.AgencyID == agency.ID);
+      return (properties) => new Route(new GTFSPropertyCollection(properties, defaultAgency));
     }
   }
 }

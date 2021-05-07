@@ -18,14 +18,13 @@ namespace Nixill.GTFS.Entities
     /// <summary>
     ///   Creates a <c>GTFSIdentifiedEntity</c>.
     /// </summary>
-    /// <param name="feed">The feed containing this entity.</param>
     /// <param name="properties">
     ///   The entity's collection of properties.
     /// </param>
     /// <param name="idName">
     ///   Which property is the value of the ID of the entity.
     /// </param>
-    protected GTFSIdentifiedEntity(GTFSFeed feed, GTFSPropertyCollection properties, string idName) : base(feed, properties)
+    protected GTFSIdentifiedEntity(GTFSPropertyCollection properties, string idName) : base(properties)
     {
       ID = properties[idName];
     }

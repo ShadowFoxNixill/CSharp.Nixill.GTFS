@@ -117,36 +117,15 @@ namespace Nixill.GTFS.Entities
     /// </remarks>
     public Tristate BikesAllowed => (Tristate)Properties.GetInt("bikes_allowed", 0);
 
-    /// <summary>The route to which this trip belongs.</summary>
-    public Route Route => Feed.Routes[RouteId];
-
-    /// <summary>The set of days on which this trip operates.</summary>
-    public (Calendar, IEnumerable<CalendarDate>) ServiceCalendar => Feed.Calendars[ServiceId];
-
-    private Trip(GTFSFeed feed, GTFSPropertyCollection properties) : base(feed, properties, "trip_id")
+    private Trip(GTFSPropertyCollection properties) : base(properties, "trip_id")
     {
     }
 
     /// <summary>Creates a new <c>Trip</c>.</summary>
-    /// <param name="feed">The parent GTFS feed.</param>
     /// <param name="properties">The property collection.</param>
-    public static Trip Factory(GTFSFeed feed, IEnumerable<(string, string)> properties)
+    public static Trip Factory(IEnumerable<(string, string)> properties)
     {
-      return new Trip(feed, new GTFSPropertyCollection(properties));
-    }
-  }
-
-  namespace Extensions
-  {
-    public static class TripFeedExtensions
-    {
-      /// <summary>
-      ///   Returns all the <c>Trip</c>s of this <c>Route</c>.
-      /// </summary>
-      public static IEnumerable<Trip> Trips(this Route route)
-      {
-        return route.Feed.Trips.Where(x => x.RouteId == route.ID);
-      }
+      return new Trip(new GTFSPropertyCollection(properties));
     }
   }
 }

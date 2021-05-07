@@ -169,14 +169,13 @@ namespace Nixill.GTFS.Entities
     /// </remarks>
     public bool ServiceOn(LocalDate date) => DateInRange(date) && ServiceOnDayOfWeek(date.DayOfWeek);
 
-    private Calendar(GTFSFeed feed, GTFSPropertyCollection properties) : base(feed, properties, "service_id")
+    private Calendar(GTFSPropertyCollection properties) : base(properties, "service_id")
     {
       if (!properties.IsDate("start_date") || !properties.IsDate("end_date")) throw new InvalidDataException("Calendars must have a date range.");
     }
 
     /// <summary>Creates a new <c>Calendar</c>.</summary>
-    /// <param name="feed">The parent GTFS feed.</param>
     /// <param name="properties">The property collection.</param>
-    public static Calendar Factory(GTFSFeed feed, IEnumerable<(string, string)> properties) => new Calendar(feed, new GTFSPropertyCollection(properties));
+    public static Calendar Factory(IEnumerable<(string, string)> properties) => new Calendar(new GTFSPropertyCollection(properties));
   }
 }

@@ -33,8 +33,8 @@ namespace Nixill.GTFS.Entities
     /// <summary>
     ///   Creates a new <c>GTFSTwoPartEntity</c>.
     /// </summary>
-    protected GTFSTwoPartEntity(GTFSFeed feed, GTFSPropertyCollection properties, TKey1 firstKey, TKey2 secondKey)
-      : base(feed, properties)
+    protected GTFSTwoPartEntity(GTFSPropertyCollection properties, TKey1 firstKey, TKey2 secondKey)
+      : base(properties)
     {
       FirstKey = firstKey;
       SecondKey = secondKey;

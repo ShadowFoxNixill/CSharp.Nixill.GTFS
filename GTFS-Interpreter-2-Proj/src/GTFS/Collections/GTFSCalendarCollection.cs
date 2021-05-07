@@ -35,11 +35,6 @@ namespace Nixill.GTFS.Collections
     public readonly IReadOnlyList<string> ServiceIds;
 
     /// <summary>
-    ///   The GTFS feed from which this collection was derived.
-    /// </summary>
-    public readonly GTFSFeed Feed;
-
-    /// <summary>
     ///   Returns the count of <see cref="ServiceIds" />.
     /// </summary>
     public int Count => ServiceIds.Count;
@@ -56,16 +51,16 @@ namespace Nixill.GTFS.Collections
     ///   <see cref="GTFSFeed" />, using the default <c>calendar</c> and
     ///   <c>calendar_dates</c> tables.
     /// </summary>
-    public GTFSCalendarCollection(GTFSFeed feed) : this(feed, "calendar", "calendar_dates") { }
+    public GTFSCalendarCollection(IGTFSDataSource source) : this(source, "calendar", "calendar_dates") { }
 
     /// <summary>
     ///   Creates a <c>GTFSCalendarCollection</c> from a given
     ///   <see cref="GTFSFeed" />, using user-defined table names.
     /// </summary>
-    public GTFSCalendarCollection(GTFSFeed feed, string calendarTable, string calendarDateTable)
+    public GTFSCalendarCollection(IGTFSDataSource source, string calendarTable, string calendarDateTable)
     {
-      Calendars = new IDEntityCollection<Calendar>(feed, calendarTable, Calendar.Factory);
-      CalendarDates = new TwoKeyEntityCollection<string, LocalDate, CalendarDate>(feed, calendarDateTable, CalendarDate.Factory);
+      Calendars = new IDEntityCollection<Calendar>(source, calendarTable, Calendar.Factory);
+      CalendarDates = new TwoKeyEntityCollection<string, LocalDate, CalendarDate>(source, calendarDateTable, CalendarDate.Factory);
 
       ServiceIds = Calendars.Select(x => x.ID).Union(CalendarDates.FirstKeys).ToList().AsReadOnly();
     }
