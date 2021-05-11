@@ -199,15 +199,4 @@ namespace Nixill.GTFS.Entities
     /// <param name="properties">The property collection.</param>
     public static StopTime Factory(IEnumerable<(string, string)> properties) => new StopTime(new GTFSPropertyCollection(properties));
   }
-
-  namespace Extensions
-  {
-    public static class StopTimeTripExtensions
-    {
-      public static IEnumerable<StopTime> StopTimes(this Trip trip, TwoKeyEntityCollection<string, int, StopTime> times)
-      {
-        return times.Where(x => x.TripID == trip.ID);
-      }
-    }
-  }
 }
