@@ -7,6 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../GTFS-Interpreter-2-Proj/GTFS-Interpreter-2.csproj" />
+    <ProjectReference Include="../CSharp.Nixill.GTFS/CSharp.Nixill.GTFS.csproj" />
   </ItemGroup>
 </Project>
