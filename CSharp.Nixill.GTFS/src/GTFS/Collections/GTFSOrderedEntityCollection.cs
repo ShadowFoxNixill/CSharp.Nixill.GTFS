@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Nixill.Collections;
 using Nixill.GTFS.Entities;
 using Nixill.GTFS.Parsing;
@@ -17,8 +18,24 @@ namespace Nixill.GTFS.Collections
     public int Count { get; }
 
     /// <summary>
-    ///   Creates a new GTFSOrderedEntityCollection from the given table in the
-    ///   given feed.
+    ///   The element with a given key, if it exists. If not, null.
+    /// </summary>
+    public T this[string id, int index]
+    {
+      get
+      {
+        if (Backing.TryGetValue(id, out var second))
+        {
+          if (second.TryGetValue(index, out var result)) return result;
+        }
+
+        return null;
+      }
+    }
+
+    /// <summary>
+    ///   Creates a new GTFSOrderedEntityCollection from the given table
+    ///   in the given feed.
     /// </summary>
     public GTFSOrderedEntityCollection(IGTFSDataSource source, string tableName, GTFSEntityFactory<T> factory)
     {
@@ -132,5 +149,164 @@ namespace Nixill.GTFS.Collections
     public IEnumerator<T> GetEnumerator() => Enumerable().GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => Enumerable().GetEnumerator();
+
+    private class OrderedListView : IReadOnlyNavigableDictionary<int, T>
+    {
+      private AVLTreeDictionary<int, T> Backer;
+
+      public T this[int key]
+      {
+        get
+        {
+          if (Backer.TryGetValue())
+        }
+      }
+
+      public IEnumerable<int> Keys => Backer.Keys;
+
+      public IEnumerable<T> Values => Backer.Values;
+
+      public int Count => throw new System.NotImplementedException();
+
+      public KeyValuePair<int, T> CeilingEntry(int from)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public int CeilingKey(int from)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public bool ContainsCeiling(int from)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public bool ContainsFloor(int from)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public bool ContainsHigher(int from)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public bool ContainsKey(int key)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public bool ContainsLower(int from)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public KeyValuePair<int, T> FloorEntry(int from)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public int FloorKey(int from)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public IEnumerator<KeyValuePair<int, T>> GetEnumerator()
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public KeyValuePair<int, T> HigherEntry(int from)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public int HigherKey(int from)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public KeyValuePair<int, T> HighestEntry()
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public int HighestKey()
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public KeyValuePair<int, T> LowerEntry(int from)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public int LowerKey(int from)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public KeyValuePair<int, T> LowestEntry()
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public int LowestKey()
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public bool TryGetCeilingEntry(int from, out KeyValuePair<int, T> value)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public bool TryGetCeilingKey(int from, out int value)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public bool TryGetFloorEntry(int from, out KeyValuePair<int, T> value)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public bool TryGetFloorKey(int from, out int value)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public bool TryGetHigherEntry(int from, out KeyValuePair<int, T> value)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public bool TryGetHigherKey(int from, out int value)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public bool TryGetLowerEntry(int from, out KeyValuePair<int, T> value)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public bool TryGetLowerKey(int from, out int value)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      public bool TryGetValue(int key, [MaybeNullWhen(false)] out T value)
+      {
+        throw new System.NotImplementedException();
+      }
+
+      IEnumerator IEnumerable.GetEnumerator()
+      {
+        throw new System.NotImplementedException();
+      }
+    }
   }
 }
