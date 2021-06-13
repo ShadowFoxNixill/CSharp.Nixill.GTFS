@@ -54,6 +54,11 @@ namespace Nixill.GTFS
     public readonly IDEntityCollection<Trip> Trips;
 
     /// <summary>
+    ///   The collection of <see cref="StopTime" />s within the feed.
+    /// </summary>
+    public readonly GTFSOrderedEntityCollection<StopTime> StopTimes;
+
+    /// <summary>
     ///   Creates a GTFS feed with a given <see cref="IGTFSDataSource" />.
     /// </summary>
     public GTFSFeed(IGTFSDataSource source)
@@ -66,6 +71,7 @@ namespace Nixill.GTFS
       Calendars = new GTFSCalendarCollection(DataSource);
       Stops = new IDEntityCollection<Stop>(DataSource, "stops", Stop.Factory);
       Trips = new IDEntityCollection<Trip>(DataSource, "trips", Trip.Factory);
+      StopTimes = new GTFSOrderedEntityCollection<StopTime>(DataSource, "stop_times", StopTime.Factory);
     }
   }
 }

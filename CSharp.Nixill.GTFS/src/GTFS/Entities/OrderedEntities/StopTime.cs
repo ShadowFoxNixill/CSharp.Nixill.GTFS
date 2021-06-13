@@ -10,7 +10,7 @@ namespace Nixill.GTFS.Entities
   /// <summary>
   ///   Represents a single instance of a trip serving a stop.
   /// </summary>
-  public class StopTime : GTFSTwoPartEntity<string, int>
+  public class StopTime : GTFSOrderedEntity
   {
     /// <summary>
     ///   The ID of the trip of which this stop is a part.
@@ -193,7 +193,7 @@ namespace Nixill.GTFS.Entities
     /// </remarks>
     public bool Timepoint => Properties.GetBool("timepoint");
 
-    private StopTime(GTFSPropertyCollection properties) : base(properties, properties["trip_id"], properties.GetInt("stop_sequence")) { }
+    private StopTime(GTFSPropertyCollection properties) : base(properties, "trip_id", "stop_sequence") { }
 
     /// <summary>Create a new <c>StopTime</c>.</summary>
     /// <param name="properties">The property collection.</param>
