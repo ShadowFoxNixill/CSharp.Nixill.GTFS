@@ -152,13 +152,13 @@ namespace Nixill.GTFS.Collections
 
     private class OrderedListView : IReadOnlyNavigableDictionary<int, T>
     {
-      private AVLTreeDictionary<int, T> Backer;
+      public AVLTreeDictionary<int, T> Backer;
 
       public T this[int key]
       {
         get
         {
-          if (Backer.TryGetValue())
+          var nodes = Backer
         }
       }
 
