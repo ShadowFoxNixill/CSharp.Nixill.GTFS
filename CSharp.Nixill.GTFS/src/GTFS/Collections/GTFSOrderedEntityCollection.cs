@@ -18,7 +18,8 @@ namespace Nixill.GTFS.Collections
     public int Count { get; }
 
     /// <summary>
-    ///   The element with a given key, if it exists. If not, null.
+    ///   The element with the given ID, and the highest equal-or-lower
+    ///   index. If no equal or lower index exists, returns null.
     /// </summary>
     public T this[string id, int index]
     {
@@ -26,8 +27,23 @@ namespace Nixill.GTFS.Collections
       {
         if (Backing.TryGetValue(id, out var second))
         {
-          if (second.TryGetValue(index, out var result)) return result;
+          if (second.TryGetFloorEntry(index, out var result)) return result.Value;
         }
+
+        return null;
+      }
+    }
+
+    /// <summary>
+    ///   All of the elements with a given ID, if any exist. Otherwise,
+    ///   null.
+    /// </summary>
+    public IReadOnlyNavigableDictionary<int, T> this[string id]
+    {
+      get
+      {
+        if (Backing.TryGetValue(id, out var second))
+          return new OrderedListView() { Backer = second };
 
         return null;
       }
@@ -158,154 +174,158 @@ namespace Nixill.GTFS.Collections
       {
         get
         {
-          var nodes = Backer
+          var nodes = Backer.EntriesAround(key);
+          if (nodes.HasEqualValue) return nodes.EqualValue.Value;
+          else if (nodes.HasLesserValue) return nodes.LesserValue.Value;
+          else return null;
         }
       }
 
-      public IEnumerable<int> Keys => Backer.Keys;
 
-      public IEnumerable<T> Values => Backer.Values;
+      public IEnumerable<int> Keys => ((IDictionary<int, T>)Backer).Keys;
 
-      public int Count => throw new System.NotImplementedException();
+      public IEnumerable<T> Values => ((IDictionary<int, T>)Backer).Values;
+
+      public int Count => ((ICollection<KeyValuePair<int, T>>)Backer).Count;
 
       public KeyValuePair<int, T> CeilingEntry(int from)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).CeilingEntry(from);
       }
 
       public int CeilingKey(int from)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).CeilingKey(from);
       }
 
       public bool ContainsCeiling(int from)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).ContainsCeiling(from);
       }
 
       public bool ContainsFloor(int from)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).ContainsFloor(from);
       }
 
       public bool ContainsHigher(int from)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).ContainsHigher(from);
       }
 
       public bool ContainsKey(int key)
       {
-        throw new System.NotImplementedException();
+        return ((IDictionary<int, T>)Backer).ContainsKey(key);
       }
 
       public bool ContainsLower(int from)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).ContainsLower(from);
       }
 
       public KeyValuePair<int, T> FloorEntry(int from)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).FloorEntry(from);
       }
 
       public int FloorKey(int from)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).FloorKey(from);
       }
 
       public IEnumerator<KeyValuePair<int, T>> GetEnumerator()
       {
-        throw new System.NotImplementedException();
+        return ((IEnumerable<KeyValuePair<int, T>>)Backer).GetEnumerator();
       }
 
       public KeyValuePair<int, T> HigherEntry(int from)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).HigherEntry(from);
       }
 
       public int HigherKey(int from)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).HigherKey(from);
       }
 
       public KeyValuePair<int, T> HighestEntry()
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).HighestEntry();
       }
 
       public int HighestKey()
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).HighestKey();
       }
 
       public KeyValuePair<int, T> LowerEntry(int from)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).LowerEntry(from);
       }
 
       public int LowerKey(int from)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).LowerKey(from);
       }
 
       public KeyValuePair<int, T> LowestEntry()
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).LowestEntry();
       }
 
       public int LowestKey()
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).LowestKey();
       }
 
       public bool TryGetCeilingEntry(int from, out KeyValuePair<int, T> value)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).TryGetCeilingEntry(from, out value);
       }
 
       public bool TryGetCeilingKey(int from, out int value)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).TryGetCeilingKey(from, out value);
       }
 
       public bool TryGetFloorEntry(int from, out KeyValuePair<int, T> value)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).TryGetFloorEntry(from, out value);
       }
 
       public bool TryGetFloorKey(int from, out int value)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).TryGetFloorKey(from, out value);
       }
 
       public bool TryGetHigherEntry(int from, out KeyValuePair<int, T> value)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).TryGetHigherEntry(from, out value);
       }
 
       public bool TryGetHigherKey(int from, out int value)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).TryGetHigherKey(from, out value);
       }
 
       public bool TryGetLowerEntry(int from, out KeyValuePair<int, T> value)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).TryGetLowerEntry(from, out value);
       }
 
       public bool TryGetLowerKey(int from, out int value)
       {
-        throw new System.NotImplementedException();
+        return ((INavigableDictionary<int, T>)Backer).TryGetLowerKey(from, out value);
       }
 
       public bool TryGetValue(int key, [MaybeNullWhen(false)] out T value)
       {
-        throw new System.NotImplementedException();
+        return ((IDictionary<int, T>)Backer).TryGetValue(key, out value);
       }
 
       IEnumerator IEnumerable.GetEnumerator()
       {
-        throw new System.NotImplementedException();
+        return ((IEnumerable)Backer).GetEnumerator();
       }
     }
   }
