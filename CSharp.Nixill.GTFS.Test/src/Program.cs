@@ -21,7 +21,7 @@ namespace Nixill.Testing
     private static void StopTimeTest(IGTFSDataSource source)
     {
       GTFSFeed feed = new GTFSFeed(source);
-      var stopTimes = new TwoKeyEntityCollection<string, int, StopTime>(source, "stop_times", StopTime.Factory);
+      var stopTimes = feed.StopTimes;
 
       var tripsByRouteService = feed.Trips.GroupBy(tp => (tp.RouteId, tp.ServiceId));
       var timesByTrip = stopTimes.GroupBy(stm => stm.TripID).ToDictionary(stm => stm.Key, stm => new { start = stm.Min(x => x.DepartureTime), end = stm.Max(x => x.ArrivalTime) });
