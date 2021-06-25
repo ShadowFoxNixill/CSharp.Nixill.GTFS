@@ -64,21 +64,16 @@ namespace Nixill.GTFS.Collections
     }
 
     public bool Contains(T item) => Backing.TryGetValue(item.ID, out var middle) && middle.ContainsKey(item.Index);
-
     public bool Contains((string ID, int Index) key) =>
       Backing.TryGetValue(key.ID, out var middle) && middle.ContainsKey(key.Index);
-
     public bool Contains(string key) => Backing.ContainsKey(key);
 
     public bool ContainsLower((string ID, int Index) key) =>
       Backing.TryGetValue(key.ID, out var middle) && middle.ContainsLower(key.Index);
-
     public bool ContainsFloor((string ID, int Index) key) =>
       Backing.TryGetValue(key.ID, out var middle) && middle.ContainsFloor(key.Index);
-
     public bool ContainsCeiling((string ID, int Index) key) =>
       Backing.TryGetValue(key.ID, out var middle) && middle.ContainsCeiling(key.Index);
-
     public bool ContainsHigher((string ID, int Index) key) =>
       Backing.TryGetValue(key.ID, out var middle) && middle.ContainsHigher(key.Index);
 
@@ -94,7 +89,8 @@ namespace Nixill.GTFS.Collections
     }
 
     public IEnumerator<T> GetEnumerator() => Enumerable().GetEnumerator();
-
     IEnumerator IEnumerable.GetEnumerator() => Enumerable().GetEnumerator();
+    public IReadOnlyCollection<GTFSUnparsedEntity> GetUnparsed() =>
+      Unparsed.AsReadOnly();
   }
 }

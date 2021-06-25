@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Nixill.GTFS.Collections;
 
 namespace Nixill.GTFS.Entities

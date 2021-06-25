@@ -8,9 +8,6 @@ using NodaTime.Text;
 
 namespace Nixill.GTFS.Parsing
 {
-  /// <summary>
-  ///   Utility class to convert string values to other data types.
-  /// </summary>
   public static class GTFSObjectParser
   {
     // Color: A color encoded as a six-digit hexadecimal number. Refer to
@@ -20,14 +17,6 @@ namespace Nixill.GTFS.Parsing
     //   A, C, E lines in NYMTA.
     public static readonly Regex ColorRegex = new Regex(@"^[0-9a-f]{6}$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    /// <summary>
-    ///   Returns a <see cref="Color" /> if the input is a valid color;
-    ///   otherwise, returns <c>null</c>.
-    /// </summary>
-    /// <remarks>
-    ///   To be a valid Color, the input must be a six hex digit code,
-    ///   WITHOUT the leading <c>#</c> sign.
-    /// </remarks>
     public static Color? GetNullableColor(string input)
     {
       if (input == null) return null;
@@ -37,16 +26,6 @@ namespace Nixill.GTFS.Parsing
     }
     public static Color? GetNullableColor(this GTFSPropertyCollection properties, string key) => GetNullableColor(properties[key]);
 
-    /// <summary>
-    ///   Returns a <see cref="Color" />.
-    /// </summary>
-    /// <remarks>
-    ///   To be a valid Color, the input must be a six hex digit code,
-    ///   WITHOUT the leading <c>#</c> sign.
-    /// </remarks>
-    /// <exception cref="ArgumentException">
-    ///   <c>input</c> is not a valid Color.
-    /// </exception>
     public static Color GetColor(string input, Color? def = null)
     {
       Color? test = GetNullableColor(input);
@@ -56,13 +35,6 @@ namespace Nixill.GTFS.Parsing
     }
     public static Color GetColor(this GTFSPropertyCollection properties, string key, Color? def = null) => GetColor(properties[key], def);
 
-    /// <summary>
-    ///   Returns whether or not the input is a valid color.
-    /// </summary>
-    /// <remarks>
-    ///   To be a valid color, the input must be a six hex digit code,
-    ///   WITHOUT the leading <c>#</c> sign.
-    /// </remarks>
     public static bool IsColor(string input)
     {
       if (input == null) return false;
@@ -75,16 +47,8 @@ namespace Nixill.GTFS.Parsing
     //   information for the subsequent day(s).
     // Example: `20180913` for September 13th, 2018.
     public static readonly LocalDatePattern DatePattern = LocalDatePattern.CreateWithInvariantCulture("uuuuMMdd");
-    public static readonly Regex DateRegex = new Regex(@"^\d{8}$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    public static readonly Regex DateRegex = new Regex(@"^\d{8}$", RegexOptions.Compiled);
 
-    /// <summary>
-    ///   Returns a <see cref="LocalDate" /> if the input is a valid date.
-    ///   Otherwise, returns <c>null</c>.
-    /// </summary>
-    /// <remarks>
-    ///   To be a valid date, the input must be in <c>YYYYMMDD</c> format,
-    ///   with no separators between the components.
-    /// </remarks>
     public static LocalDate? GetNullableDate(string input)
     {
       if (input == null) return null;
@@ -94,16 +58,6 @@ namespace Nixill.GTFS.Parsing
     }
     public static LocalDate? GetNullableDate(this GTFSPropertyCollection properties, string key) => GetNullableDate(properties[key]);
 
-    /// <summary>
-    ///   Returns a <see cref="LocalDate" />.
-    /// </summary>
-    /// <remarks>
-    ///   To be a valid date, the input must be in <c>YYYYMMDD</c> format,
-    ///   with no separators between the components.
-    /// </remarks>
-    /// <exception cref="Exception">
-    ///   <c>input</c> is not a valid date.
-    /// </exception>
     public static LocalDate GetDate(string input, LocalDate? def = null)
     {
       ParseResult<LocalDate> res = DatePattern.Parse(input);
@@ -113,13 +67,6 @@ namespace Nixill.GTFS.Parsing
     }
     public static LocalDate GetDate(this GTFSPropertyCollection properties, string key, LocalDate? def = null) => GetDate(properties[key], def);
 
-    /// <summary>
-    ///   Returns whether or not the input is a valid <see cref="LocalDate" />.
-    /// </summary>
-    /// <remarks>
-    ///   To be a valid date, the input must be in <c>YYYYMMDD</c> format,
-    ///   with no separators between the components.
-    /// </remarks>
     public static bool IsDate(string input)
     {
       if (input == null) return false;
@@ -136,16 +83,8 @@ namespace Nixill.GTFS.Parsing
     //   trip schedule begins.
     // Example: `14:30:00` for 2:30PM or `25:35:00` for 1:35AM on the next day.
     public static readonly DurationPattern TimePattern = DurationPattern.CreateWithInvariantCulture("H:mm:ss");
-    public static readonly Regex TimeRegex = new Regex(@"\d+:\d\d:\d\d", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    public static readonly Regex TimeRegex = new Regex(@"^\d+:\d\d:\d\d$", RegexOptions.Compiled);
 
-    /// <summary>
-    ///   Returns a <see cref="Duration" /> from the input, if it's a
-    ///   valid time. Otherwise, returns null.
-    /// </summary>
-    /// <remarks>
-    ///   To be a valid time, the input must be in <c>H:mm:ss</c> or
-    ///   <c>HH:mm:ss</c> format.
-    /// </remarks>
     public static Duration? GetNullableTime(string input)
     {
       if (input == null) return null;
@@ -155,16 +94,6 @@ namespace Nixill.GTFS.Parsing
     }
     public static Duration? GetNullableTime(this GTFSPropertyCollection properties, string key) => GetNullableTime(properties[key]);
 
-    /// <summary>
-    ///   Returns a <see cref="Duration" /> from the input.
-    /// </summary>
-    /// <remarks>
-    ///   To be a valid time, the input must be in <c>H:mm:ss</c> or
-    ///   <c>HH:mm:ss</c> format.
-    /// </remarks>
-    /// <exception cref="Exception">
-    ///   <c>input</c> is not a valid time.
-    /// </exception>
     public static Duration GetTime(string input, Duration? def = null)
     {
       ParseResult<Duration> res = TimePattern.Parse(input);
@@ -174,13 +103,6 @@ namespace Nixill.GTFS.Parsing
     }
     public static Duration GetTime(this GTFSPropertyCollection properties, string key, Duration? def = null) => GetTime(properties[key], def);
 
-    /// <summary>
-    ///   Returns whether or not the input is a valid <see cref="Duration" />.
-    /// </summary>
-    /// <remarks>
-    ///   To be a valid time, the input must be in <c>H:mm:ss</c> or
-    ///   <c>HH:mm:ss</c> format.
-    /// </remarks>
     public static bool IsTime(string input)
     {
       if (input == null) return false;
@@ -193,40 +115,21 @@ namespace Nixill.GTFS.Parsing
     //   an underscore. Refer to
     //   http://en.wikipedia.org/wiki/List_of_tz_zones for a list of valid
     //   values. 
-    public static readonly IDateTimeZoneProvider TimezoneProvider = DateTimeZoneProviders.Tzdb;
+    private static readonly IDateTimeZoneProvider TimezoneProvider = DateTimeZoneProviders.Tzdb;
 
-    /// <summary>
-    ///   Returns the identified <see cref="DateTimeZone" />, or
-    ///   <c>null</c> if there is no such zone.
-    /// </summary>
     public static DateTimeZone GetTimeZone(string input) => TimezoneProvider.GetZoneOrNull(input);
     public static DateTimeZone GetTimeZone(this GTFSPropertyCollection properties, string key) => GetTimeZone(properties[key]);
 
     // Numeric parsers
-    /// <summary>
-    ///   Returns whether or not the input is a valid <see cref="int" />.
-    /// </summary>
     public static bool IsInt(string input) => int.TryParse(input, out int placeholder);
     public static bool IsInt(this GTFSPropertyCollection properties, string key) => IsInt(properties[key]);
 
-    /// <summary>
-    ///   Returns whether or not the input is a valid <see cref="decimal" />.
-    /// </summary>
     public static bool IsDecimal(string input) => decimal.TryParse(input, out decimal placeholder);
     public static bool IsDecimal(this GTFSPropertyCollection properties, string key) => IsDecimal(properties[key]);
 
-    /// <summary>
-    ///   Returns whether or not the input is a valid <see cref="double" />.
-    /// </summary>
     public static bool IsDouble(string input) => double.TryParse(input, out double placeholder);
     public static bool IsDouble(this GTFSPropertyCollection properties, string key) => IsDouble(properties[key]);
 
-    /// <summary>
-    ///   Returns the input as an <see cref="int" />.
-    /// </summary>
-    /// <exception cref="ArgumentException">
-    ///   <c>input</c> is not a valid <see cref="int" />.
-    /// </exception>
     public static int GetInt(this GTFSPropertyCollection properties, string key, int? def = null)
     {
       string input = properties[key];
@@ -236,12 +139,6 @@ namespace Nixill.GTFS.Parsing
       throw new ArgumentException($"{input} could not be cast to a number.");
     }
 
-    /// <summary>
-    ///   Returns the input as an <see cref="decimal" />.
-    /// </summary>
-    /// <exception cref="ArgumentException">
-    ///   <c>input</c> is not a valid <see cref="decimal" />.
-    /// </exception>
     public static decimal GetDecimal(this GTFSPropertyCollection properties, string key, decimal? def = null)
     {
       string input = properties[key];
@@ -251,12 +148,6 @@ namespace Nixill.GTFS.Parsing
       throw new ArgumentException($"{input} could not be cast to a number.");
     }
 
-    /// <summary>
-    ///   Returns the input as an <see cref="double" />.
-    /// </summary>
-    /// <exception cref="ArgumentException">
-    ///   <c>input</c> is not a valid <see cref="double" />.
-    /// </exception>
     public static double GetDouble(this GTFSPropertyCollection properties, string key, double? def = null)
     {
       string input = properties[key];
