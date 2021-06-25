@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO.Compression;
 using Nixill.GTFS.Entities;
 using Nixill.GTFS.Parsing;
 
