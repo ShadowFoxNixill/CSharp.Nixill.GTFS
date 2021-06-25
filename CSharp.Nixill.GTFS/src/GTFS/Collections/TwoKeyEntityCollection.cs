@@ -19,7 +19,7 @@ namespace Nixill.GTFS.Collections
   /// <typeparam name="TKey2">
   ///   The type of <c>TEntity</c>'s second key.
   /// </typeparam>
-  public class TwoKeyEntityCollection<TKey1, TKey2, TEntity> : IReadOnlyCollection<TEntity> where TEntity : GTFSTwoPartEntity<TKey1, TKey2>
+  public class TwoKeyEntityCollection<TEntity, TKey1, TKey2> : IReadOnlyCollection<TEntity> where TEntity : GTFSTwoPartEntity<TKey1, TKey2>
   {
     private Dictionary<(TKey1, TKey2), TEntity> Dict;
     private List<GTFSUnparsedEntity> Unparsed;
