@@ -10,26 +10,15 @@ using Nixill.Utils;
 
 namespace Nixill.GTFS.Parsing
 {
-  /// <summary>
-  ///   An IGTFSDataSource using a zip archive as its backend.
-  /// </summary>
   public class ZipGTFSDataSource : IGTFSDataSource
   {
     private ZipArchive Archive;
 
-    /// <summary>
-    ///   Creates a <c>ZipGTFSDataSource</c> using an existing
-    ///   <c>ZipArchive</c> object.
-    /// </summary>
     public ZipGTFSDataSource(ZipArchive archive)
     {
       Archive = archive;
     }
 
-    /// <summary>
-    ///   Creates a <c>ZipGTFSDataSource</c> using a new
-    ///   <see cref="ZipArchive" /> object referring to <c>archiveName</c>.
-    /// </summary>
     public ZipGTFSDataSource(string archiveName) : this(ZipFile.OpenRead(archiveName))
     { }
 
