@@ -49,4 +49,10 @@ namespace Nixill.GTFS.Enumerations
     OneDirection = 0,
     OtherDirection = 1
   }
+
+  public enum FarePaymentMethod
+  {
+    OnBoard = 0,
+    BeforeBoarding = 1
+  }
 }

@@ -110,6 +110,29 @@ namespace Nixill.GTFS.Parsing
     }
     public static bool IsTime(this GTFSPropertyCollection properties, string key) => IsTime(properties[key]);
 
+    // Duration - When a duration of time is specified in a GTFS file,
+    //   it's specified an an integer number of seconds. The methods below
+    //   convert that into Duration objects.
+    public static Duration? GetNullableDuration(string input)
+    {
+      int? val = GetNullableNonNegativeInt(input);
+      if (val.HasValue) return Duration.FromSeconds(val.Value);
+      else return null;
+    }
+    public static Duration? GetNullableDuration(this GTFSPropertyCollection properties, string key) => GetNullableDuration(properties[key]);
+
+    public static Duration GetDuration(string input, Duration? def = null)
+    {
+      int? val = GetNullableNonNegativeInt(input);
+      if (val.HasValue) return Duration.FromSeconds(val.Value);
+      if (def.HasValue) return def.Value;
+      throw new ArgumentException($"{input} could not be parsed into a duration in seconds.");
+    }
+    public static Duration GEtDuration(this GTFSPropertyCollection properties, string key, Duration? def = null) => GetDuration(properties[key], def);
+
+    public static bool IsDuration(string input) => IsNonNegativeInt(input);
+    public static bool IsDuration(this GTFSPropertyCollection properties, string key) => IsNonNegativeInt(properties[key]);
+
     // Timezone - TZ timezone from the https://www.iana.org/time-zones.
     //   Timezone names never contain the space character but may contain
     //   an underscore. Refer to
