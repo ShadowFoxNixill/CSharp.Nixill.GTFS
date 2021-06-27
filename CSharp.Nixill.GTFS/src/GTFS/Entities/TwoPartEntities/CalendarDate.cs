@@ -9,7 +9,7 @@ namespace Nixill.GTFS.Entities
 {
   public class CalendarDate : GTFSTwoPartEntity<string, LocalDate>
   {
-    public string ServiceId => Properties["service_id"];
+    public string ServiceID => Properties["service_id"];
     public LocalDate Date => Properties.GetDate("date");
     public ExceptionType ExceptionType => (ExceptionType)Properties.GetInt("exception_type");
     public bool IsAdded => ExceptionType == ExceptionType.Added;

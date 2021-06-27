@@ -8,7 +8,7 @@ namespace Nixill.GTFS.Collections
   {
     private Dictionary<string, string> Backing;
 
-    public GTFSPropertyCollection(IDictionary<string, string> input, string agencyId = null)
+    public GTFSPropertyCollection(IDictionary<string, string> input, string agencyID = null)
     {
       Backing = new Dictionary<string, string>();
 
@@ -17,13 +17,13 @@ namespace Nixill.GTFS.Collections
         if (input[key] != null && input[key] != "") Backing[key] = input[key];
       }
 
-      if ((agencyId != null) && !Backing.ContainsKey("agency_id"))
+      if ((agencyID != null) && !Backing.ContainsKey("agency_id"))
       {
-        Backing["agency_id"] = agencyId;
+        Backing["agency_id"] = agencyID;
       }
     }
 
-    public GTFSPropertyCollection(IEnumerable<(string Key, string Value)> enumerable, string agencyId = null)
+    public GTFSPropertyCollection(IEnumerable<(string Key, string Value)> enumerable, string agencyID = null)
     {
       Backing = new Dictionary<string, string>();
 
@@ -32,9 +32,9 @@ namespace Nixill.GTFS.Collections
         if (tuple.Value != null && tuple.Value != "") Backing[tuple.Key] = tuple.Value;
       }
 
-      if ((agencyId != null) && !Backing.ContainsKey("agency_id"))
+      if ((agencyID != null) && !Backing.ContainsKey("agency_id"))
       {
-        Backing["agency_id"] = agencyId;
+        Backing["agency_id"] = agencyID;
       }
     }
 
