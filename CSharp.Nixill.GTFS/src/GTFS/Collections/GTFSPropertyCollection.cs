@@ -38,13 +38,6 @@ namespace Nixill.GTFS.Collections
       }
     }
 
-    /// <summary>
-    ///   Returns the property with the specified key.
-    /// </summary>
-    /// <remarks>
-    ///   If the key wasn't in the input data, or its value was
-    ///   <c>null</c> or empty string, <c>null</c> is returned.
-    /// </remarks>
     public string this[string key]
     {
       get
