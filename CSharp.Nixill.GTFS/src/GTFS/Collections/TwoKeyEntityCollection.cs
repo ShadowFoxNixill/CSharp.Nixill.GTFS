@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Nixill.GTFS.Entities;
-using Nixill.GTFS.Parsing;
+using Nixill.GTFS.Sources;
 
 namespace Nixill.GTFS.Collections
 {

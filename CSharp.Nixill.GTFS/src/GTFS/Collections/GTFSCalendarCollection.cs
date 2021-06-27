@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
 using Nixill.GTFS.Entities;
-using Nixill.GTFS.Parsing;
+using Nixill.GTFS.Sources;
 using NodaTime;
 
 namespace Nixill.GTFS.Collections

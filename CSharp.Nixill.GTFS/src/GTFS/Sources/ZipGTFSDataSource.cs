@@ -8,7 +8,7 @@ using Nixill.GTFS.Collections;
 using Nixill.GTFS.Entities;
 using Nixill.Utils;
 
-namespace Nixill.GTFS.Parsing
+namespace Nixill.GTFS.Sources
 {
   public class ZipGTFSDataSource : IGTFSDataSource
   {

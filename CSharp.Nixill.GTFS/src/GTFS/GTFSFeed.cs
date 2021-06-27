@@ -1,7 +1,7 @@
 using Nixill.GTFS.Collections;
 using Nixill.GTFS.Entities;
 using System.Linq;
-using Nixill.GTFS.Parsing;
+using Nixill.GTFS.Sources;
 
 namespace Nixill.GTFS
 {
