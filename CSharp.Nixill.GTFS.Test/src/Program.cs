@@ -3,9 +3,8 @@ using Nixill.GTFS;
 using Nixill.GTFS.Entities;
 using NodaTime.Text;
 using System.Linq;
-using Nixill.GTFS.Parsing;
+using Nixill.GTFS.Sources;
 using System.Collections.Generic;
-using Nixill.GTFS.Collections;
 using NodaTime;
 
 namespace Nixill.Testing
@@ -23,15 +22,15 @@ namespace Nixill.Testing
       GTFSFeed feed = new GTFSFeed(source);
       var stopTimes = feed.StopTimes;
 
-      var tripsByRouteService = feed.Trips.GroupBy(tp => (tp.RouteId, tp.ServiceId));
+      var tripsByRouteService = feed.Trips.GroupBy(tp => (tp.RouteID, tp.ServiceID));
       var timesByTrip = stopTimes.GroupBy(stm => stm.TripID).ToDictionary(stm => stm.Key, stm => new { start = stm.Min(x => x.DepartureTime), end = stm.Max(x => x.ArrivalTime) });
 
       DurationPattern ptn = DurationPattern.CreateWithInvariantCulture("H:mm:ss");
 
       foreach (var group in tripsByRouteService)
       {
-        var rt = feed.Routes[group.Key.RouteId];
-        var cal = feed.Calendars[group.Key.ServiceId].Item1;
+        var rt = feed.Routes[group.Key.RouteID];
+        var cal = feed.Calendars[group.Key.ServiceID].Item1;
 
         string header = $"{rt.Type} {rt.ShortName} {rt.LongName} - {DayMasks.Get(cal.Mask)}";
 
