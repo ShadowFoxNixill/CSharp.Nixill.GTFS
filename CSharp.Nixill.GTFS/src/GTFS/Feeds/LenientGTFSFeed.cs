@@ -6,10 +6,6 @@ using System.Collections.Generic;
 
 namespace Nixill.GTFS.Feeds
 {
-  /// <summary>
-  ///   Represents a single GTFS feed. This class provides access to all
-  ///   of the data within the feed.
-  /// </summary>
   public class LenientGTFSFeed : IStandardGTFSFeed
   {
     public IGTFSDataSource DataSource { get; }
