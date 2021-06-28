@@ -189,6 +189,7 @@ namespace Nixill.GTFS.Parsing
       DateTimeZone dtz = GetTimeZone(input);
       if (dtz == null) throw new PropertyTypeException(key, $"{key} is not a proper timezone.");
     }
+    public static void AssertTimeZone(this GTFSPropertyCollection properties, string key) => AssertTimeZone(properties[key], key);
 
     // Numeric parsers
     public static bool IsInt(string input) => int.TryParse(input, out int placeholder);
