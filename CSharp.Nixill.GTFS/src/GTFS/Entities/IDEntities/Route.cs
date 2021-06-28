@@ -28,8 +28,6 @@ namespace Nixill.GTFS.Entities
     }
 
     public static GTFSEntityFactory<Route> GetFactory(string defaultAgency)
-    {
-      return (properties) => new Route(new GTFSPropertyCollection(properties, defaultAgency));
-    }
+      => (properties) => new Route(new GTFSPropertyCollection(properties, defaultAgency));
   }
 }

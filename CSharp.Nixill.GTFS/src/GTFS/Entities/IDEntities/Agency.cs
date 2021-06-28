@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Nixill.GTFS.Collections;
 using Nixill.GTFS.Parsing;
@@ -20,8 +21,6 @@ namespace Nixill.GTFS.Entities
     }
 
     public static Agency Factory(IEnumerable<(string, string)> properties)
-    {
-      return new Agency(new GTFSPropertyCollection(properties, ""));
-    }
+      => new Agency(new GTFSPropertyCollection(properties, ""));
   }
 }

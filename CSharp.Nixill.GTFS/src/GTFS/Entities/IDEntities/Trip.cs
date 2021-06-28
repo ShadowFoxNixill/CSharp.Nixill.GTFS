@@ -24,8 +24,6 @@ namespace Nixill.GTFS.Entities
     /// <summary>Creates a new <c>Trip</c>.</summary>
     /// <param name="properties">The property collection.</param>
     public static Trip Factory(IEnumerable<(string, string)> properties)
-    {
-      return new Trip(new GTFSPropertyCollection(properties));
-    }
+      => new Trip(new GTFSPropertyCollection(properties));
   }
 }

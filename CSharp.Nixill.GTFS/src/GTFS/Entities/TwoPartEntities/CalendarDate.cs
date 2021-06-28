@@ -21,8 +21,6 @@ namespace Nixill.GTFS.Entities
     }
 
     public static CalendarDate Factory(IEnumerable<(string, string)> properties)
-    {
-      return new CalendarDate(new GTFSPropertyCollection(properties));
-    }
+      => new CalendarDate(new GTFSPropertyCollection(properties));
   }
 }

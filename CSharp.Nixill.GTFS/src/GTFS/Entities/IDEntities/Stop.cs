@@ -29,8 +29,6 @@ namespace Nixill.GTFS.Entities
     /// <summary>Creates a new <c>Stop</c>.</summary>
     /// <param name="properties">The property collection.</param>
     public static Stop Factory(IEnumerable<(string, string)> properties)
-    {
-      return new Stop(new GTFSPropertyCollection(properties));
-    }
+      => new Stop(new GTFSPropertyCollection(properties));
   }
 }
