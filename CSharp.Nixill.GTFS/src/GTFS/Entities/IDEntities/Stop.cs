@@ -22,9 +22,7 @@ namespace Nixill.GTFS.Entities
     public string LevelID => Properties["level_id"];
     public string PlatformCode => Properties["platform_code"];
 
-    private Stop(GTFSPropertyCollection properties) : base(properties, "stop_id")
-    {
-    }
+    public Stop(GTFSPropertyCollection properties) : base(properties, "stop_id") { }
 
     /// <summary>Creates a new <c>Stop</c>.</summary>
     /// <param name="properties">The property collection.</param>

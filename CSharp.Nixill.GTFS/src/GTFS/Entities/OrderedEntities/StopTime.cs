@@ -21,7 +21,7 @@ namespace Nixill.GTFS.Entities
     public decimal? ShapeDistTraveled => Properties.GetNullableNonNegativeDecimal("shape_dist_traveled");
     public bool Timepoint => Properties.GetBool("timepoint");
 
-    private StopTime(GTFSPropertyCollection properties) : base(properties, "trip_id", "stop_sequence") { }
+    public StopTime(GTFSPropertyCollection properties) : base(properties, "trip_id", "stop_sequence") { }
 
     public static StopTime Factory(IEnumerable<(string, string)> properties) => new StopTime(new GTFSPropertyCollection(properties));
   }

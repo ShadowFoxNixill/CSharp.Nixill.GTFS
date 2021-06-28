@@ -16,11 +16,6 @@ namespace Nixill.GTFS.Entities
     public string Email => Properties["agency_email"];
     public DateTimeZone TimeZone => Properties.GetTimeZone("agency_timezone");
 
-    private Agency(GTFSPropertyCollection properties) : base(properties, "agency_id")
-    {
-    }
-
-    public static Agency Factory(IEnumerable<(string, string)> properties)
-      => new Agency(new GTFSPropertyCollection(properties, ""));
+    public Agency(GTFSPropertyCollection properties) : base(properties, "agency_id") { }
   }
 }

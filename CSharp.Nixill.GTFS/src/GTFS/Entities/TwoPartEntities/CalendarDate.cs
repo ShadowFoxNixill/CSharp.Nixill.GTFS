@@ -15,10 +15,7 @@ namespace Nixill.GTFS.Entities
     public bool IsAdded => ExceptionType == ExceptionType.Added;
     public bool IsRemoved => ExceptionType == ExceptionType.Removed;
 
-    private CalendarDate(GTFSPropertyCollection properties) : base(properties, properties["service_id"], properties.GetDate("date"))
-    {
-      if (!properties.IsInt("exception_type")) throw new InvalidDataException("Calendar dates must have exception types.");
-    }
+    public CalendarDate(GTFSPropertyCollection properties) : base(properties, properties["service_id"], properties.GetDate("date")) { }
 
     public static CalendarDate Factory(IEnumerable<(string, string)> properties)
       => new CalendarDate(new GTFSPropertyCollection(properties));

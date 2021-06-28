@@ -43,10 +43,7 @@ namespace Nixill.GTFS.Entities
     public bool DateInRange(LocalDate date) => date >= StartDate && date <= EndDate;
     public bool ServiceOn(LocalDate date) => DateInRange(date) && ServiceOnDayOfWeek(date.DayOfWeek);
 
-    private Calendar(GTFSPropertyCollection properties) : base(properties, "service_id")
-    {
-      if (!properties.IsDate("start_date") || !properties.IsDate("end_date")) throw new InvalidDataException("Calendars must have a date range.");
-    }
+    public Calendar(GTFSPropertyCollection properties) : base(properties, "service_id") { }
 
     /// <summary>Creates a new <c>Calendar</c>.</summary>
     /// <param name="properties">The property collection.</param>

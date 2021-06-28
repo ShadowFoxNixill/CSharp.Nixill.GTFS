@@ -20,7 +20,7 @@ namespace Nixill.GTFS.Entities
     public PickupDropoffType ContinuousPickup => (PickupDropoffType)Properties.GetInt("continuous_pickup", 1);
     public PickupDropoffType ContinuousDropoff => (PickupDropoffType)Properties.GetInt("continuous_drop_off", 1);
 
-    private Route(GTFSPropertyCollection properties) : base(properties, "route_id")
+    public Route(GTFSPropertyCollection properties) : base(properties, "route_id")
     {
       if (!properties.ContainsKey("route_short_name") && !properties.ContainsKey("route_long_name"))
         throw new InvalidDataException("Routes must have either a long name or a short name.");

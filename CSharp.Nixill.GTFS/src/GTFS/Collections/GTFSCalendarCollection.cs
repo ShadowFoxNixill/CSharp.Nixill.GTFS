@@ -16,10 +16,10 @@ namespace Nixill.GTFS.Collections
     public int Count => ServiceIds.Count;
     public (Calendar, IEnumerable<CalendarDate>) this[string id] => (Calendars[id], CalendarDates.WithFirstKey(id));
 
-    public GTFSCalendarCollection(IGTFSDataSource source, string calendarTable = "calendar", string calendarDateTable = "calendar_dates")
+    public GTFSCalendarCollection(IGTFSDataSource source, IDEntityCollection<Calendar> calendars, TwoKeyEntityCollection<CalendarDate, string, LocalDate> calendarDates)
     {
-      Calendars = new IDEntityCollection<Calendar>(source, calendarTable, Calendar.Factory);
-      CalendarDates = new TwoKeyEntityCollection<CalendarDate, string, LocalDate>(source, calendarDateTable, CalendarDate.Factory);
+      Calendars = calendars;
+      CalendarDates = calendarDates;
 
       ServiceIds = Calendars.Select(x => x.ID).Union(CalendarDates.FirstKeys).ToList().AsReadOnly();
     }

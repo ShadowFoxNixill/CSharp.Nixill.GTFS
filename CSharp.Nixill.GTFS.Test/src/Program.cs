@@ -1,11 +1,11 @@
-﻿using System;
-using Nixill.GTFS;
-using Nixill.GTFS.Entities;
-using NodaTime.Text;
-using System.Linq;
+﻿using Nixill.GTFS.Entities;
+using Nixill.GTFS.Feeds;
 using Nixill.GTFS.Sources;
-using System.Collections.Generic;
 using NodaTime;
+using NodaTime.Text;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Nixill.Testing
 {
@@ -19,7 +19,7 @@ namespace Nixill.Testing
 
     private static void StopTimeTest(IGTFSDataSource source)
     {
-      GTFSFeed feed = new GTFSFeed(source);
+      IGTFSFeed feed = new LenientGTFSFeed(source);
       var stopTimes = feed.StopTimes;
 
       var tripsByRouteService = feed.Trips.GroupBy(tp => (tp.RouteID, tp.ServiceID));
@@ -50,7 +50,7 @@ namespace Nixill.Testing
       }
     }
 
-    private static void StopTest(GTFSFeed feed)
+    private static void StopTest(IGTFSFeed feed)
     {
       var stops = feed.Stops.GroupBy(x => x.LocationType);
 
@@ -60,7 +60,7 @@ namespace Nixill.Testing
       }
     }
 
-    private static void CalendarTest(GTFSFeed feed)
+    private static void CalendarTest(IGTFSFeed feed)
     {
       LocalDatePattern ptn = LocalDatePattern.CreateWithInvariantCulture("ddd uuuu-MM-dd");
 
