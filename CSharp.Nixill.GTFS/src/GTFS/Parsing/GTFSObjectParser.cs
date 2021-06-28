@@ -2,6 +2,8 @@ using System;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using Nixill.GTFS.Collections;
+using Nixill.GTFS.Entities;
+using Nixill.GTFS.Parsing.Exceptions;
 using Nixill.Utils;
 using NodaTime;
 using NodaTime.Text;
@@ -10,6 +12,12 @@ namespace Nixill.GTFS.Parsing
 {
   public static class GTFSObjectParser
   {
+    public static void AssertExists(string input, string key)
+    {
+      if (input == null || input == "") throw new PropertyNullException(key);
+    }
+    public static void AssertExists(this GTFSPropertyCollection properties, string key) => AssertExists(properties[key], key);
+
     // Color: A color encoded as a six-digit hexadecimal number. Refer to
     //   https://htmlcolorcodes.com to generate a valid value (the leading
     //   "#" is not included).
@@ -42,6 +50,13 @@ namespace Nixill.GTFS.Parsing
     }
     public static bool IsColor(this GTFSPropertyCollection properties, string key) => IsColor(properties[key]);
 
+    public static void AssertColor(string input, string key)
+    {
+      AssertExists(input, key);
+      if (!IsColor(input)) throw new PropertyTypeException(key, $"{key} is not a valid color.");
+    }
+    public static void AssertColor(this GTFSPropertyCollection properties, string key) => AssertColor(properties[key], key);
+
     // Date: Service day in the `YYYYMMDD` format. Since time within a
     //   service day can be above 24:00:00, a service day often contains
     //   information for the subsequent day(s).
@@ -73,6 +88,13 @@ namespace Nixill.GTFS.Parsing
       return DateRegex.IsMatch(input);
     }
     public static bool IsDate(this GTFSPropertyCollection properties, string key) => IsDate(properties[key]);
+
+    public static void AssertDate(string input, string key)
+    {
+      AssertExists(input, key);
+      if (!IsDate(input)) throw new PropertyTypeException(key, $"{key} is not a valid date.");
+    }
+    public static void AssertDate(this GTFSPropertyCollection properties, string key) => AssertDate(properties[key], key);
 
     // Time in the HH:MM:SS format (H:MM:SS is also accepted). The time is
     //   measured from "noon minus 12h" of the service day (effectively
@@ -110,6 +132,13 @@ namespace Nixill.GTFS.Parsing
     }
     public static bool IsTime(this GTFSPropertyCollection properties, string key) => IsTime(properties[key]);
 
+    public static void AssertTime(string input, string key)
+    {
+      AssertExists(input, key);
+      if (!IsTime(input)) throw new PropertyTypeException(key, $"{key} is not a valid time.");
+    }
+    public static void AssertTime(this GTFSPropertyCollection properties, string key) => AssertTime(properties[key], key);
+
     // Duration - When a duration of time is specified in a GTFS file,
     //   it's specified an an integer number of seconds. The methods below
     //   convert that into Duration objects.
@@ -128,10 +157,21 @@ namespace Nixill.GTFS.Parsing
       if (def.HasValue) return def.Value;
       throw new ArgumentException($"{input} could not be parsed into a duration in seconds.");
     }
-    public static Duration GEtDuration(this GTFSPropertyCollection properties, string key, Duration? def = null) => GetDuration(properties[key], def);
+    public static Duration GetDuration(this GTFSPropertyCollection properties, string key, Duration? def = null) => GetDuration(properties[key], def);
 
     public static bool IsDuration(string input) => IsNonNegativeInt(input);
     public static bool IsDuration(this GTFSPropertyCollection properties, string key) => IsNonNegativeInt(properties[key]);
+
+    public static void AssertDuration(string input, string key)
+    {
+      AssertExists(input, key);
+      if (!IsDuration(input))
+      {
+        if (IsInt(input)) throw new PropertyRangeException(key, $"Durations, such as {key}, must be non-negative.");
+        else throw new PropertyTypeException(key, $"{key} is not a valid duration.");
+      }
+    }
+    public static void AssertDuration(this GTFSPropertyCollection properties, string key) => AssertDuration(properties[key], key);
 
     // Timezone - TZ timezone from the https://www.iana.org/time-zones.
     //   Timezone names never contain the space character but may contain
@@ -143,6 +183,13 @@ namespace Nixill.GTFS.Parsing
     public static DateTimeZone GetTimeZone(string input) => TimezoneProvider.GetZoneOrNull(input);
     public static DateTimeZone GetTimeZone(this GTFSPropertyCollection properties, string key) => GetTimeZone(properties[key]);
 
+    public static void AssertTimeZone(string input, string key)
+    {
+      AssertExists(input, key);
+      DateTimeZone dtz = GetTimeZone(input);
+      if (dtz == null) throw new PropertyTypeException(key, $"{key} is not a proper timezone.");
+    }
+
     // Numeric parsers
     public static bool IsInt(string input) => int.TryParse(input, out int placeholder);
     public static bool IsInt(this GTFSPropertyCollection properties, string key) => IsInt(properties[key]);
@@ -152,6 +199,27 @@ namespace Nixill.GTFS.Parsing
 
     public static bool IsDouble(string input) => double.TryParse(input, out double placeholder);
     public static bool IsDouble(this GTFSPropertyCollection properties, string key) => IsDouble(properties[key]);
+
+    public static void AssertInt(string input, string key)
+    {
+      AssertExists(input, key);
+      if (!IsInt(input)) throw new PropertyTypeException(key, $"{key} is not a valid integer.");
+    }
+    public static void AssertInt(this GTFSPropertyCollection properties, string key) => AssertInt(properties[key], key);
+
+    public static void AssertDouble(string input, string key)
+    {
+      AssertExists(input, key);
+      if (!IsInt(input)) throw new PropertyTypeException(key, $"{key} is not a valid double.");
+    }
+    public static void AssertDouble(this GTFSPropertyCollection properties, string key) => AssertDouble(properties[key], key);
+
+    public static void AssertDecimal(string input, string key)
+    {
+      AssertExists(input, key);
+      if (!IsInt(input)) throw new PropertyTypeException(key, $"{key} is not a valid decimal.");
+    }
+    public static void AssertDecimal(this GTFSPropertyCollection properties, string key) => AssertDecimal(properties[key], key);
 
     public static int GetInt(this GTFSPropertyCollection properties, string key, int? def = null)
     {
@@ -231,6 +299,30 @@ namespace Nixill.GTFS.Parsing
     public static bool IsNonNegativeDouble(string input) => double.TryParse(input, out double placeholder) && placeholder >= 0;
     public static bool IsNonNegativeDouble(this GTFSPropertyCollection properties, string key) => IsNonNegativeDouble(properties[key]);
 
+    public static void AssertNonNegativeInt(string input, string key)
+    {
+      AssertExists(input, key);
+      if (!IsInt(input)) throw new PropertyTypeException(key, $"{key} is not a valid integer.");
+      if (!IsNonNegativeInt(input)) throw new PropertyRangeException(key, $"{key} is not non-negative.");
+    }
+    public static void AssertNonNegativeInt(this GTFSPropertyCollection properties, string key) => AssertNonNegativeInt(properties[key], key);
+
+    public static void AssertNonNegativeDouble(string input, string key)
+    {
+      AssertExists(input, key);
+      if (!IsDouble(input)) throw new PropertyTypeException(key, $"{key} is not a valid double.");
+      if (!IsNonNegativeDouble(input)) throw new PropertyRangeException(key, $"{key} is not non-negative.");
+    }
+    public static void AssertNonNegativeDouble(this GTFSPropertyCollection properties, string key) => AssertNonNegativeDouble(properties[key], key);
+
+    public static void AssertNonNegativeDecimal(string input, string key)
+    {
+      AssertExists(input, key);
+      if (!IsDecimal(input)) throw new PropertyTypeException(key, $"{key} is not a valid decimal.");
+      if (!IsNonNegativeDecimal(input)) throw new PropertyRangeException(key, $"{key} is not non-negative.");
+    }
+    public static void AssertNonNegativeDecimal(this GTFSPropertyCollection properties, string key) => AssertDecimal(properties[key], key);
+
     public static bool GetBool(string input)
     {
       return input == "1";
@@ -250,5 +342,37 @@ namespace Nixill.GTFS.Parsing
       return (input == "0" || input == "1");
     }
     public static bool IsBool(this GTFSPropertyCollection properties, string key) => IsBool(properties[key]);
+
+    public static void AssertBool(string input, string key)
+    {
+      AssertExists(input, key);
+      if (input != "1" && input != "0") throw new PropertyTypeException(key, $"{key} isn't a valid bool.");
+    }
+    public static void AssertBool(this GTFSPropertyCollection properties, string key) => AssertBool(properties[key], key);
+
+    // Foreign key checking
+    public static void AssertForeignKeyExists<T>(string input, string key, IDEntityCollection<T> collection, string collectionName) where T : GTFSIdentifiedEntity
+    {
+      if (input == null) throw new PropertyNullException(key);
+      if (!collection.Contains(input))
+      {
+        if (input == "") throw new PropertyNullException(key);
+        else throw new PropertyForeignKeyException(key, $"The collection {collectionName} doesn't contain the key {input}.");
+      }
+    }
+    public static void AssertForeignKeyExists<T>(this GTFSPropertyCollection properties, string key, IDEntityCollection<T> collection, string collectionName) where T : GTFSIdentifiedEntity
+      => AssertForeignKeyExists(properties, key, collection, collectionName);
+
+    public static void AssertForeignKeyExists<T>(string input, string key, GTFSOrderedEntityCollection<T> collection, string collectionName) where T : GTFSOrderedEntity
+    {
+      if (input == null) throw new PropertyNullException(key);
+      if (!collection.Contains(input))
+      {
+        if (input == "") throw new PropertyNullException(key);
+        else throw new PropertyForeignKeyException(key, $"The collection {collectionName} doesn't contain the key {input}.");
+      }
+    }
+    public static void AssertForeignKeyExists<T>(this GTFSPropertyCollection properties, string key, GTFSOrderedEntityCollection<T> collection, string collectionName) where T : GTFSOrderedEntity
+      => AssertForeignKeyExists(properties, key, collection, collectionName);
   }
 }
