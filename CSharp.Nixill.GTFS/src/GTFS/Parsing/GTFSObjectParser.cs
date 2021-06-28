@@ -375,5 +375,17 @@ namespace Nixill.GTFS.Parsing
     }
     public static void AssertForeignKeyExists<T>(this GTFSPropertyCollection properties, string key, GTFSOrderedEntityCollection<T> collection, string collectionName) where T : GTFSOrderedEntity
       => AssertForeignKeyExists(properties, key, collection, collectionName);
+
+    public static void AssertForeignKeyExists(string input, string key, GTFSCalendarCollection collection, string collectionName)
+    {
+      if (input == null) throw new PropertyNullException(key);
+      if (!collection.Contains("input"))
+      {
+        if (input == "") throw new PropertyNullException(key);
+        else throw new PropertyForeignKeyException(key, $"The collection {collectionName} doesn't contain the key {input}.");
+      }
+    }
+    public static void AssertForeignKeyExists(this GTFSPropertyCollection properties, string key, GTFSCalendarCollection collection, string collectionName)
+      => AssertForeignKeyExists(properties, key, collection, collectionName);
   }
 }

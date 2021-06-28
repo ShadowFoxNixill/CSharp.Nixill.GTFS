@@ -12,8 +12,8 @@ namespace Nixill.GTFS.Collections
   {
     public readonly IDEntityCollection<Calendar> Calendars;
     public readonly TwoKeyEntityCollection<CalendarDate, string, LocalDate> CalendarDates;
-    public readonly IReadOnlyList<string> ServiceIds;
-    public int Count => ServiceIds.Count;
+    public readonly IReadOnlyList<string> ServiceIDs;
+    public int Count => ServiceIDs.Count;
     public (Calendar, IEnumerable<CalendarDate>) this[string id] => (Calendars[id], CalendarDates.WithFirstKey(id));
 
     public GTFSCalendarCollection(IGTFSDataSource source, IDEntityCollection<Calendar> calendars, TwoKeyEntityCollection<CalendarDate, string, LocalDate> calendarDates)
@@ -21,10 +21,11 @@ namespace Nixill.GTFS.Collections
       Calendars = calendars;
       CalendarDates = calendarDates;
 
-      ServiceIds = Calendars.Select(x => x.ID).Union(CalendarDates.FirstKeys).ToList().AsReadOnly();
+      ServiceIDs = Calendars.Select(x => x.ID).Union(CalendarDates.FirstKeys).ToList().AsReadOnly();
     }
 
-    public IEnumerator<(Calendar, IEnumerable<CalendarDate>)> GetEnumerator() => ServiceIds.Select(x => this[x]).GetEnumerator();
+    public IEnumerator<(Calendar, IEnumerable<CalendarDate>)> GetEnumerator() => ServiceIDs.Select(x => this[x]).GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => (IEnumerator)(GetEnumerator());
+    public bool Contains(string serviceID) => ServiceIDs.Contains(serviceID);
   }
 }
