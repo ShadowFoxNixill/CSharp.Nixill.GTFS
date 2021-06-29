@@ -105,6 +105,11 @@ namespace Nixill.GTFS.Feeds
 
       if (type == StopLocationType.Station && props.ContainsKey("parent_station")) throw new PropertyException("parent_station", "parent_station not allowed on Stations");
 
+      decimal? lat = props.GetNullableDecimal("stop_lat");
+      if (lat.HasValue && (lat < -90 || lat > 90)) throw new PropertyRangeException("stop_lat", "Latitude must be between -90 and 90.");
+      decimal? lon = props.GetNullableDecimal("stop_lon");
+      if (lon.HasValue && (lon < -180 || lon > 180)) throw new PropertyRangeException("stop_lon", "Longitude must be between -180 and 180.");
+
       return new Stop(props);
     }
 
