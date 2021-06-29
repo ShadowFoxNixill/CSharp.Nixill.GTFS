@@ -5,7 +5,7 @@ namespace Nixill.GTFS.Entities
   /// <summary>
   ///   A single entity from a GTFS feed.
   /// </summary>
-  public abstract class GTFSEntity
+  public class GTFSEntity
   {
     /// <summary>
     ///   The raw view of the properties of this entity.
@@ -18,7 +18,7 @@ namespace Nixill.GTFS.Entities
     /// <param name="properties">
     ///   The entity's collection of properties.
     /// </param>
-    protected GTFSEntity(GTFSPropertyCollection properties)
+    public GTFSEntity(GTFSPropertyCollection properties)
     {
       Properties = properties;
     }

@@ -3,7 +3,7 @@ using Nixill.GTFS.Parsing;
 
 namespace Nixill.GTFS.Entities
 {
-  public abstract class GTFSOrderedEntity : GTFSTwoPartEntity<string, int>
+  public class GTFSOrderedEntity : GTFSTwoPartEntity<string, int>
   {
     public readonly string ID;
 
