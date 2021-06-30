@@ -44,9 +44,5 @@ namespace Nixill.GTFS.Entities
     public bool ServiceOn(LocalDate date) => DateInRange(date) && ServiceOnDayOfWeek(date.DayOfWeek);
 
     public Calendar(GTFSPropertyCollection properties) : base(properties, "service_id") { }
-
-    /// <summary>Creates a new <c>Calendar</c>.</summary>
-    /// <param name="properties">The property collection.</param>
-    public static Calendar Factory(IEnumerable<(string, string)> properties) => new Calendar(new GTFSPropertyCollection(properties));
   }
 }

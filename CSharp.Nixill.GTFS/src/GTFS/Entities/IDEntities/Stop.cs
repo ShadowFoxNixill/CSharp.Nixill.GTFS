@@ -23,10 +23,5 @@ namespace Nixill.GTFS.Entities
     public string PlatformCode => Properties["platform_code"];
 
     public Stop(GTFSPropertyCollection properties) : base(properties, "stop_id") { }
-
-    /// <summary>Creates a new <c>Stop</c>.</summary>
-    /// <param name="properties">The property collection.</param>
-    public static Stop Factory(IEnumerable<(string, string)> properties)
-      => new Stop(new GTFSPropertyCollection(properties));
   }
 }

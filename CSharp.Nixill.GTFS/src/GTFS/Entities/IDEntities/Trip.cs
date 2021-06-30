@@ -18,10 +18,5 @@ namespace Nixill.GTFS.Entities
     public Tristate BikesAllowed => (Tristate)Properties.GetInt("bikes_allowed", 0);
 
     public Trip(GTFSPropertyCollection properties) : base(properties, "trip_id") { }
-
-    /// <summary>Creates a new <c>Trip</c>.</summary>
-    /// <param name="properties">The property collection.</param>
-    public static Trip Factory(IEnumerable<(string, string)> properties)
-      => new Trip(new GTFSPropertyCollection(properties));
   }
 }
