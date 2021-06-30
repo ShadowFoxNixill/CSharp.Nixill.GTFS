@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <PackageId>Nixill.GTFS</PackageId>
     <Version>$(RELEASE_VERSION)</Version>
     <Authors>Nixill</Authors>
@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Nixill" Version="0.8.6" />
+    <PackageReference Include="NodaTime" Version="3.0.5" />
   </ItemGroup>
 
 </Project>
