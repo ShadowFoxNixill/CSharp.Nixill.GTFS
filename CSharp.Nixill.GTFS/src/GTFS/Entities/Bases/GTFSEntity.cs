@@ -1,32 +1,49 @@
 using Nixill.GTFS.Collections;
+using System.Linq;
 
 namespace Nixill.GTFS.Entities
 {
-  /// <summary>
-  ///   A single entity from a GTFS feed.
-  /// </summary>
   public class GTFSEntity
   {
-    /// <summary>
-    ///   The raw view of the properties of this entity.
-    /// </summary>
     protected GTFSPropertyCollection Properties;
 
-    /// <summary>
-    ///   Creates a new <c>GTFSEntity</c>.
-    /// </summary>
-    /// <param name="properties">
-    ///   The entity's collection of properties.
-    /// </param>
     public GTFSEntity(GTFSPropertyCollection properties)
     {
       Properties = properties;
     }
 
-    /// <summary>
-    ///   Returns the given property of this entity, or null if no such
-    ///   property exists.
-    /// </summary>
     public string this[string key] => Properties[key];
+
+    public override bool Equals(object other)
+    {
+      if (!(other is GTFSEntity otherEnt)) return false;
+
+      if (Properties.Count != otherEnt.Properties.Count) return false;
+
+      foreach (var prop in Properties)
+      {
+        if (otherEnt[prop.Key] != prop.Value) return false;
+      }
+
+      foreach (var prop in otherEnt.Properties)
+      {
+        if (this[prop.Key] != prop.Value) return false;
+      }
+
+      return true;
+    }
+
+    public override int GetHashCode()
+    {
+      int code = 0;
+
+      foreach (var prop in Properties)
+      {
+        code ^= prop.Key.GetHashCode();
+        code ^= prop.Value.GetHashCode();
+      }
+
+      return code;
+    }
   }
 }

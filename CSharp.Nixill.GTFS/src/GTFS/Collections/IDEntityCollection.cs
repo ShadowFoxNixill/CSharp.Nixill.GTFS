@@ -12,10 +12,6 @@ namespace Nixill.GTFS.Collections
 
     public int Count => Dict.Count;
 
-    /// <summary>
-    ///   Creates a new IDEntityCollection from the given table in the
-    ///   given feed.
-    /// </summary>
     public IDEntityCollection(IGTFSDataSource source, string tableName, GTFSEntityFactory<T> factory)
     {
       Dict = new Dictionary<string, T>();
