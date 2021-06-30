@@ -21,6 +21,7 @@ namespace Nixill.GTFS.Feeds
     public IDEntityCollection<Trip> Trips { get; }
     public GTFSOrderedEntityCollection<StopTime> StopTimes { get; }
     public IDEntityCollection<FareAttribute> FareAttributes { get; }
+    public GTFSGenericCollection<FareRule> FareRules { get; }
 
     public StrictGTFSFeed(IGTFSDataSource source)
     {
@@ -39,6 +40,7 @@ namespace Nixill.GTFS.Feeds
       Trips = new IDEntityCollection<Trip>(DataSource, "trips", TripFactory);
       StopTimes = new GTFSOrderedEntityCollection<StopTime>(DataSource, "stop_times", StopTimeFactory);
       FareAttributes = new IDEntityCollection<FareAttribute>(DataSource, "fare_attributes", FareAttributeFactory);
+      FareRules = new GTFSGenericCollection<FareRule>(DataSource, "fare_rules", FareRuleFactory);
     }
 
     private Agency AgencyFactory(IEnumerable<(string, string)> properties)
@@ -147,6 +149,16 @@ namespace Nixill.GTFS.Feeds
       props.AssertExists("currency_type");
       props.AssertNonNegativeInt("payment_method");
       return new FareAttribute(props);
+    }
+
+    private FareRule FareRuleFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertExists("fare_id");
+      if (!(props.ContainsKey("route_id") || props.ContainsKey("origin_id") || props.ContainsKey("destination_id") ||
+        props.ContainsKey("contains_id")))
+        throw new PropertyNullException("route_id, origin_id, destination_id, contains_id", "One of these properties must be provided.");
+      return new FareRule(props);
     }
   }
 }
