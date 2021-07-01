@@ -14,6 +14,5 @@ namespace Nixill.GTFS.Feeds
     public IDEntityCollection<Stop> Stops { get; }
     public IDEntityCollection<Trip> Trips { get; }
     public GTFSOrderedEntityCollection<StopTime> StopTimes { get; }
-    public GTFSGenericCollection<FareRule> FareRules { get; }
   }
 }

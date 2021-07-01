@@ -6,5 +6,6 @@ namespace Nixill.GTFS.Feeds
   public interface IStandardGTFSFeed : IGTFSFeed
   {
     public IDEntityCollection<FareAttribute> FareAttributes { get; }
+    public GTFSGenericCollection<FareRule> FareRules { get; }
   }
 }
