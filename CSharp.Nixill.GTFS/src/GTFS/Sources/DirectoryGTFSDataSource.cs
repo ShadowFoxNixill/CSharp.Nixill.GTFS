@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using Nixill.Collections.Grid.CSV;
 using Nixill.GTFS.Collections;
@@ -10,31 +9,45 @@ using Nixill.Utils;
 
 namespace Nixill.GTFS.Sources
 {
-  public class ZipGTFSDataSource : IGTFSDataSource
+  public class DirectoryGTFSDataSource : IGTFSDataSource
   {
-    private ZipArchive Archive;
+    private string SourceDirectory;
 
-    public ZipGTFSDataSource(ZipArchive archive)
+    public DirectoryGTFSDataSource(string directory)
     {
-      Archive = archive;
+      SourceDirectory = directory;
+      if (!Directory.Exists(SourceDirectory)) throw new DirectoryNotFoundException("The specified directory does not exist.");
     }
 
-    public ZipGTFSDataSource(string archiveName) : this(ZipFile.OpenRead(archiveName))
-    { }
+    public DirectoryGTFSDataSource()
+    {
+      SourceDirectory = Directory.GetCurrentDirectory();
+    }
+
+    private FileStream GetFileOrNull(string path)
+    {
+      try
+      {
+        return File.OpenRead(path);
+      }
+      catch (Exception)
+      {
+        return null;
+      }
+    }
 
     public IEnumerable<T> GetObjects<T>(string table, GTFSEntityFactory<T> factory, List<GTFSUnparsedEntity> unparsed = null) where T : GTFSEntity
     {
       // Get the file:
-      ZipArchiveEntry file = Archive.GetEntry(table);
+      FileStream file = GetFileOrNull($"{SourceDirectory}{Path.DirectorySeparatorChar}{table}");
 
       // If that's not found, try appending .txt:
-      if (file == null) file = Archive.GetEntry($"{table}.txt");
+      if (file == null) file = File.OpenRead($"{SourceDirectory}{Path.DirectorySeparatorChar}{table}.txt");
 
       // If still nout found, return an empty collection.
       if (file == null) yield break;
 
-      using var stream = new StreamReader(file.Open());
-      var rows = CSVParser.EnumerableToRows(FileUtils.StreamCharEnumerator(stream));
+      var rows = CSVParser.EnumerableToRows(FileUtils.StreamCharEnumerator(new StreamReader(file)));
 
       List<string> header = new List<string>();
       bool first = true;

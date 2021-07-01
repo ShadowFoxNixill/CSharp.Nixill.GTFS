@@ -13,7 +13,7 @@ namespace Nixill.Testing
   {
     static void Main(string[] args)
     {
-      var source = new ZipGTFSDataSource("gtfs/ddot_gtfs.zip");
+      var source = new DirectoryGTFSDataSource("gtfs/ddot_gtfs");
       StopTimeTest(source);
     }
 
