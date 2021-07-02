@@ -211,14 +211,14 @@ namespace Nixill.GTFS.Parsing
     public static void AssertDouble(string input, string key)
     {
       AssertExists(input, key);
-      if (!IsInt(input)) throw new PropertyTypeException(key, $"{key} is not a valid double.");
+      if (!IsDouble(input)) throw new PropertyTypeException(key, $"{key} is not a valid double.");
     }
     public static void AssertDouble(this GTFSPropertyCollection properties, string key) => AssertDouble(properties[key], key);
 
     public static void AssertDecimal(string input, string key)
     {
       AssertExists(input, key);
-      if (!IsInt(input)) throw new PropertyTypeException(key, $"{key} is not a valid decimal.");
+      if (!IsDecimal(input)) throw new PropertyTypeException(key, $"{key} is not a valid decimal.");
     }
     public static void AssertDecimal(this GTFSPropertyCollection properties, string key) => AssertDecimal(properties[key], key);
 
@@ -362,7 +362,7 @@ namespace Nixill.GTFS.Parsing
       }
     }
     public static void AssertForeignKeyExists<T>(this GTFSPropertyCollection properties, string key, IDEntityCollection<T> collection, string collectionName) where T : GTFSIdentifiedEntity
-      => AssertForeignKeyExists(properties, key, collection, collectionName);
+      => AssertForeignKeyExists(properties[key], key, collection, collectionName);
 
     public static void AssertForeignKeyExists<T>(string input, string key, GTFSOrderedEntityCollection<T> collection, string collectionName) where T : GTFSOrderedEntity
     {
@@ -374,18 +374,18 @@ namespace Nixill.GTFS.Parsing
       }
     }
     public static void AssertForeignKeyExists<T>(this GTFSPropertyCollection properties, string key, GTFSOrderedEntityCollection<T> collection, string collectionName) where T : GTFSOrderedEntity
-      => AssertForeignKeyExists(properties, key, collection, collectionName);
+      => AssertForeignKeyExists(properties[key], key, collection, collectionName);
 
     public static void AssertForeignKeyExists(string input, string key, GTFSCalendarCollection collection, string collectionName)
     {
       if (input == null) throw new PropertyNullException(key);
-      if (!collection.Contains("input"))
+      if (!collection.Contains(input))
       {
         if (input == "") throw new PropertyNullException(key);
         else throw new PropertyForeignKeyException(key, $"The collection {collectionName} doesn't contain the key {input}.");
       }
     }
     public static void AssertForeignKeyExists(this GTFSPropertyCollection properties, string key, GTFSCalendarCollection collection, string collectionName)
-      => AssertForeignKeyExists(properties, key, collection, collectionName);
+      => AssertForeignKeyExists(properties[key], key, collection, collectionName);
   }
 }
