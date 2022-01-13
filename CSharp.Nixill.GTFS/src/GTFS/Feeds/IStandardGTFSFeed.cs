@@ -7,5 +7,6 @@ namespace Nixill.GTFS.Feeds
   {
     public IDEntityCollection<FareAttribute> FareAttributes { get; }
     public GTFSGenericCollection<FareRule> FareRules { get; }
+    public GTFSOrderedEntityCollection<ShapePoint> ShapePoints { get; }
   }
 }

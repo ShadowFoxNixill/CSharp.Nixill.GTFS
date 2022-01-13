@@ -19,6 +19,7 @@ namespace Nixill.GTFS.Feeds
     public GTFSOrderedEntityCollection<StopTime> StopTimes { get; }
     public IDEntityCollection<FareAttribute> FareAttributes { get; }
     public GTFSGenericCollection<FareRule> FareRules { get; }
+    public GTFSOrderedEntityCollection<ShapePoint> ShapePoints { get; }
 
     public LenientGTFSFeed(IGTFSDataSource source)
     {
@@ -37,6 +38,7 @@ namespace Nixill.GTFS.Feeds
       Trips = new IDEntityCollection<Trip>(DataSource, "trips", TripFactory);
       StopTimes = new GTFSOrderedEntityCollection<StopTime>(DataSource, "stop_times", StopTimeFactory);
       FareAttributes = new IDEntityCollection<FareAttribute>(DataSource, "fare_attributes", FareAttributeFactory);
+      ShapePoints = new GTFSOrderedEntityCollection<ShapePoint>(DataSource, "shapes", ShapePointFactory);
     }
 
     private Agency AgencyFactory(IEnumerable<(string, string)> properties)
@@ -62,5 +64,8 @@ namespace Nixill.GTFS.Feeds
 
     private FareAttribute FareAttributeFactory(IEnumerable<(string, string)> properties)
       => new FareAttribute(new GTFSPropertyCollection(properties));
+
+    private ShapePoint ShapePointFactory(IEnumerable<(string, string)> properties)
+      => new ShapePoint(new GTFSPropertyCollection(properties));
   }
 }

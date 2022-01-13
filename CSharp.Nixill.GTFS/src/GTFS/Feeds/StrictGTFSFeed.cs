@@ -22,6 +22,7 @@ namespace Nixill.GTFS.Feeds
     public GTFSOrderedEntityCollection<StopTime> StopTimes { get; }
     public IDEntityCollection<FareAttribute> FareAttributes { get; }
     public GTFSGenericCollection<FareRule> FareRules { get; }
+    public GTFSOrderedEntityCollection<ShapePoint> ShapePoints { get; }
 
     public StrictGTFSFeed(IGTFSDataSource source)
     {
@@ -41,6 +42,7 @@ namespace Nixill.GTFS.Feeds
       StopTimes = new GTFSOrderedEntityCollection<StopTime>(DataSource, "stop_times", StopTimeFactory);
       FareAttributes = new IDEntityCollection<FareAttribute>(DataSource, "fare_attributes", FareAttributeFactory);
       FareRules = new GTFSGenericCollection<FareRule>(DataSource, "fare_rules", FareRuleFactory);
+      ShapePoints = new GTFSOrderedEntityCollection<ShapePoint>(DataSource, "shapes", ShapePointFactory);
     }
 
     private Agency AgencyFactory(IEnumerable<(string, string)> properties)
@@ -159,6 +161,16 @@ namespace Nixill.GTFS.Feeds
         props.ContainsKey("contains_id")))
         throw new PropertyNullException("route_id, origin_id, destination_id, contains_id", "One of these properties must be provided.");
       return new FareRule(props);
+    }
+
+    private ShapePoint ShapePointFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertExists("shape_id");
+      props.AssertDecimal("shape_pt_lat");
+      props.AssertDecimal("shape_pt_lon");
+      props.AssertInt("shape_pt_sequence");
+      return new ShapePoint(props);
     }
   }
 }
