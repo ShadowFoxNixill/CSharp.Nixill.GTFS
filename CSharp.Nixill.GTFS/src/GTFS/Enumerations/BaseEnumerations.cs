@@ -55,4 +55,23 @@ namespace Nixill.GTFS.Enumerations
     OnBoard = 0,
     BeforeBoarding = 1
   }
+
+  public enum TransferType
+  {
+    Recommended = 0,
+    Timed = 1,
+    MinimumTime = 2,
+    NotPossible = 3
+  }
+
+  public enum PathwayMode
+  {
+    Walkway = 1,
+    Stairs = 2,
+    MovingSidewalk = 3,
+    Escalator = 4,
+    Elevator = 5,
+    FareGate = 6,
+    ExitGate = 7
+  }
 }

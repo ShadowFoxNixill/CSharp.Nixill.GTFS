@@ -22,7 +22,5 @@ namespace Nixill.GTFS.Entities
     public bool Timepoint => Properties.GetBool("timepoint");
 
     public StopTime(GTFSPropertyCollection properties) : base(properties, "trip_id", "stop_sequence") { }
-
-    public static StopTime Factory(IEnumerable<(string, string)> properties) => new StopTime(new GTFSPropertyCollection(properties));
   }
 }

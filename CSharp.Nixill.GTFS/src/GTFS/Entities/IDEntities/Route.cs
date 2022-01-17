@@ -26,8 +26,5 @@ namespace Nixill.GTFS.Entities
         throw new InvalidDataException("Routes must have either a long name or a short name.");
       if (!properties.IsInt("route_type")) throw new InvalidDataException("Routes must have a type.");
     }
-
-    public static GTFSEntityFactory<Route> GetFactory(string defaultAgency)
-      => (properties) => new Route(new GTFSPropertyCollection(properties, defaultAgency));
   }
 }

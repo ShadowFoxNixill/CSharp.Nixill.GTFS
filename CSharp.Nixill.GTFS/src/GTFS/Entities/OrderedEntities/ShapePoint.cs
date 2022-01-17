@@ -13,7 +13,5 @@ namespace Nixill.GTFS.Entities
     public decimal? ShapePointDistTraveled => Properties.GetNullableDecimal("shape_dist_traveled");
 
     public ShapePoint(GTFSPropertyCollection props) : base(props, "shape_id", "shape_pt_sequence") { }
-
-    public static ShapePoint Factory(IEnumerable<(string, string)> properties) => new ShapePoint(new GTFSPropertyCollection(properties));
   }
 }

@@ -15,8 +15,5 @@ namespace Nixill.GTFS.Entities
     public int? Transfers => Properties.GetNullableInt("transfers");
     public string AgencyID => Properties["agency_id"];
     public Duration? TransferDuration => Properties.GetNullableDuration("transfer_duration");
-
-    public static GTFSEntityFactory<FareAttribute> GetFactory(string defaultAgencyID) =>
-      (properties) => new FareAttribute(new GTFSPropertyCollection(properties, defaultAgencyID));
   }
 }
