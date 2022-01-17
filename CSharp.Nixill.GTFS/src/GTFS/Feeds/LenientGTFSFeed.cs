@@ -3,6 +3,7 @@ using Nixill.GTFS.Entities;
 using System.Linq;
 using Nixill.GTFS.Sources;
 using System.Collections.Generic;
+using NodaTime;
 
 namespace Nixill.GTFS.Feeds
 {
@@ -20,6 +21,10 @@ namespace Nixill.GTFS.Feeds
     public IDEntityCollection<FareAttribute> FareAttributes { get; }
     public GTFSGenericCollection<FareRule> FareRules { get; }
     public GTFSOrderedEntityCollection<ShapePoint> ShapePoints { get; }
+    public TwoKeyEntityCollection<Frequency, string, Duration> Frequencies { get; }
+    public TwoKeyEntityCollection<Transfer, string, string> Transfers { get; }
+    public IDEntityCollection<Pathway> Pathways { get; }
+    public IDEntityCollection<Level> Levels { get; }
 
     public LenientGTFSFeed(IGTFSDataSource source)
     {
@@ -39,6 +44,10 @@ namespace Nixill.GTFS.Feeds
       StopTimes = new GTFSOrderedEntityCollection<StopTime>(DataSource, "stop_times", StopTimeFactory);
       FareAttributes = new IDEntityCollection<FareAttribute>(DataSource, "fare_attributes", FareAttributeFactory);
       ShapePoints = new GTFSOrderedEntityCollection<ShapePoint>(DataSource, "shapes", ShapePointFactory);
+      Frequencies = new TwoKeyEntityCollection<Frequency, string, Duration>(DataSource, "frequencies", FrequencyFactory);
+      Transfers = new TwoKeyEntityCollection<Transfer, string, string>(DataSource, "transfers", TransferFactory);
+      Pathways = new IDEntityCollection<Pathway>(DataSource, "pathways", PathwayFactory);
+      Levels = new IDEntityCollection<Level>(DataSource, "levels", LevelFactory);
     }
 
     private Agency AgencyFactory(IEnumerable<(string, string)> properties)
@@ -67,5 +76,17 @@ namespace Nixill.GTFS.Feeds
 
     private ShapePoint ShapePointFactory(IEnumerable<(string, string)> properties)
       => new ShapePoint(new GTFSPropertyCollection(properties));
+
+    private Frequency FrequencyFactory(IEnumerable<(string, string)> properties)
+      => new Frequency(new GTFSPropertyCollection(properties));
+
+    private Transfer TransferFactory(IEnumerable<(string, string)> properties)
+      => new Transfer(new GTFSPropertyCollection(properties));
+
+    private Pathway PathwayFactory(IEnumerable<(string, string)> properties)
+      => new Pathway(new GTFSPropertyCollection(properties));
+
+    private Level LevelFactory(IEnumerable<(string, string)> properties)
+      => new Level(new GTFSPropertyCollection(properties));
   }
 }

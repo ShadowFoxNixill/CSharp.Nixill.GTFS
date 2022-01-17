@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Nixill.GTFS.Parsing;
 using Nixill.GTFS.Parsing.Exceptions;
 using Nixill.GTFS.Enumerations;
+using NodaTime;
 
 namespace Nixill.GTFS.Feeds
 {
@@ -23,6 +24,10 @@ namespace Nixill.GTFS.Feeds
     public IDEntityCollection<FareAttribute> FareAttributes { get; }
     public GTFSGenericCollection<FareRule> FareRules { get; }
     public GTFSOrderedEntityCollection<ShapePoint> ShapePoints { get; }
+    public TwoKeyEntityCollection<Frequency, string, Duration> Frequencies { get; }
+    public TwoKeyEntityCollection<Transfer, string, string> Transfers { get; }
+    public IDEntityCollection<Pathway> Pathways { get; }
+    public IDEntityCollection<Level> Levels { get; }
 
     public StrictGTFSFeed(IGTFSDataSource source)
     {
@@ -37,12 +42,16 @@ namespace Nixill.GTFS.Feeds
         new IDEntityCollection<Calendar>(DataSource, "calendar", CalendarFactory),
         new TwoKeyEntityCollection<CalendarDate, string, NodaTime.LocalDate>(DataSource, "calendar_dates", CalendarDateFactory)
       );
+      Levels = new IDEntityCollection<Level>(DataSource, "levels", LevelFactory);
       Stops = new IDEntityCollection<Stop>(DataSource, "stops", StopFactory);
       Trips = new IDEntityCollection<Trip>(DataSource, "trips", TripFactory);
       StopTimes = new GTFSOrderedEntityCollection<StopTime>(DataSource, "stop_times", StopTimeFactory);
       FareAttributes = new IDEntityCollection<FareAttribute>(DataSource, "fare_attributes", FareAttributeFactory);
       FareRules = new GTFSGenericCollection<FareRule>(DataSource, "fare_rules", FareRuleFactory);
       ShapePoints = new GTFSOrderedEntityCollection<ShapePoint>(DataSource, "shapes", ShapePointFactory);
+      Frequencies = new TwoKeyEntityCollection<Frequency, string, Duration>(DataSource, "frequencies", FrequencyFactory);
+      Transfers = new TwoKeyEntityCollection<Transfer, string, string>(DataSource, "transfers", TransferFactory);
+      Pathways = new IDEntityCollection<Pathway>(DataSource, "pathways", PathwayFactory);
     }
 
     private Agency AgencyFactory(IEnumerable<(string, string)> properties)
@@ -114,6 +123,11 @@ namespace Nixill.GTFS.Feeds
       decimal? lon = props.GetNullableDecimal("stop_lon");
       if (lon.HasValue && (lon < -180 || lon > 180)) throw new PropertyRangeException("stop_lon", "Longitude must be between -180 and 180.");
 
+      if (props.ContainsKey("level_id"))
+      {
+        props.AssertForeignKeyExists("level_id", Levels, "levels");
+      }
+
       return new Stop(props);
     }
 
@@ -171,6 +185,52 @@ namespace Nixill.GTFS.Feeds
       props.AssertDecimal("shape_pt_lon");
       props.AssertInt("shape_pt_sequence");
       return new ShapePoint(props);
+    }
+
+    private Frequency FrequencyFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertForeignKeyExists("trip_id", Trips, "trips");
+      props.AssertTime("start_time");
+      props.AssertTime("end_time");
+      props.AssertDuration("headway_secs");
+      return new Frequency(props);
+    }
+
+    private Transfer TransferFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertForeignKeyExists("from_stop_id", Stops, "stops");
+      props.AssertForeignKeyExists("to_stop_id", Stops, "stops");
+      props.AssertInt("transfer_type");
+      if (props["transfer_type"] == "2")
+      {
+        props.AssertDuration("min_transfer_time");
+      }
+      return new Transfer(props);
+    }
+
+    private Pathway PathwayFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertExists("pathway_id");
+      props.AssertForeignKeyExists("from_stop_id", Stops, "stops");
+      props.AssertForeignKeyExists("to_stop_id", Stops, "stops");
+      props.AssertNonNegativeInt("pathway_mode");
+      props.AssertBool("is_bidirectional");
+      if ((props["pathway_mode"] == "6" || props["pathway_mode"] == "7") && props["is_bidirectional"] == "1")
+      {
+        throw new PropertyException("is_bidirectional", "Fare gates (pathway_mode = 6) and exit gates (pathway_mode = 7) cannot be bidirectional.");
+      }
+      return new Pathway(props);
+    }
+
+    private Level LevelFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertExists("level_id");
+      props.AssertDouble("level_index");
+      return new Level(props);
     }
   }
 }
