@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using Nixill.GTFS.Collections;
 using Nixill.GTFS.Enumerations;
 using Nixill.GTFS.Parsing;

@@ -72,7 +72,7 @@ namespace Nixill.GTFS.Feeds
       => new StopTime(new GTFSPropertyCollection(properties));
 
     private FareAttribute FareAttributeFactory(IEnumerable<(string, string)> properties)
-      => new FareAttribute(new GTFSPropertyCollection(properties));
+      => new FareAttribute(new GTFSPropertyCollection(properties, DefaultAgencyID));
 
     private ShapePoint ShapePointFactory(IEnumerable<(string, string)> properties)
       => new ShapePoint(new GTFSPropertyCollection(properties));
