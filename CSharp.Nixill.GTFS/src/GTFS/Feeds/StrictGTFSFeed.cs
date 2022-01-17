@@ -28,6 +28,9 @@ namespace Nixill.GTFS.Feeds
     public TwoKeyEntityCollection<Transfer, string, string> Transfers { get; }
     public IDEntityCollection<Pathway> Pathways { get; }
     public IDEntityCollection<Level> Levels { get; }
+    public GTFSGenericCollection<Translation> Translations { get; }
+    public FeedInfo FeedInfo { get; }
+    public GTFSGenericCollection<Attribution> Attributions { get; }
 
     public StrictGTFSFeed(IGTFSDataSource source)
     {
@@ -52,6 +55,15 @@ namespace Nixill.GTFS.Feeds
       Frequencies = new TwoKeyEntityCollection<Frequency, string, Duration>(DataSource, "frequencies", FrequencyFactory);
       Transfers = new TwoKeyEntityCollection<Transfer, string, string>(DataSource, "transfers", TransferFactory);
       Pathways = new IDEntityCollection<Pathway>(DataSource, "pathways", PathwayFactory);
+      Translations = new GTFSGenericCollection<Translation>(DataSource, "translations", TranslationFactory);
+      Attributions = new GTFSGenericCollection<Attribution>(DataSource, "attributions", AttributionFactory);
+      FeedInfo = null;
+
+      foreach (FeedInfo info in DataSource.GetObjects("feed_info", FeedInfoFactory, new List<GTFSUnparsedEntity>()))
+      {
+        FeedInfo = info;
+        break;
+      }
     }
 
     private Agency AgencyFactory(IEnumerable<(string, string)> properties)
@@ -231,6 +243,63 @@ namespace Nixill.GTFS.Feeds
       props.AssertExists("level_id");
       props.AssertDouble("level_index");
       return new Level(props);
+    }
+
+    private Translation TranslationFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertExists("table_name");
+      props.AssertExists("field_name");
+      props.AssertExists("language");
+      props.AssertExists("translation");
+
+      if (props.ContainsKey("field_value"))
+      {
+        if (props.ContainsKey("record_id") || props.ContainsKey("record_sub_id")) throw new PropertyException("record_id/record_sub_id and field_value", "Not simultaneously allowed");
+        if (props["table_name"] == "feed_info") throw new PropertyException("field_value", "Not allowed if table_name == field_info");
+      }
+      else if (props.ContainsKey("record_id"))
+      {
+        if (props["table_name"] == "feed_info") throw new PropertyException("record_id", "Not allowed if table_name == field_info");
+      }
+      else if (props.ContainsKey("record_sub_id")) throw new PropertyException("record_sub_id", "Not allowed without record_id");
+      else if (props["table_name"] != "feed_info") throw new PropertyNullException("field_value and record_id", "One of these is required unless table_name == feed_info");
+
+      return new Translation(props);
+    }
+
+    private Attribution AttributionFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertExists("organization_name");
+
+      if (props.ContainsKey("agency_id"))
+      {
+        if (props.ContainsKey("route_id") || props.ContainsKey("trip_id")) throw new PropertyException("agency_id, route_id, and trip_id", "Only one is allowed.");
+        props.AssertForeignKeyExists("agency_id", Agencies, "agency");
+      }
+      else if (props.ContainsKey("route_id"))
+      {
+        if (props.ContainsKey("trip_id")) throw new PropertyException("agency_id, route_id, and trip_id", "Only one is allowed.");
+        props.AssertForeignKeyExists("route_id", Routes, "routes");
+      }
+      else if (props.ContainsKey("trip_id"))
+      {
+        props.AssertForeignKeyExists("trip_id", Trips, "trips");
+      }
+      else throw new PropertyNullException("agency_id, route_id, and trip_id", "One of these must be specified.");
+
+      return new Attribution(props);
+    }
+
+    private FeedInfo FeedInfoFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertExists("feed_publisher_name");
+      props.AssertExists("feed_publisher_url");
+      props.AssertExists("feed_lang");
+
+      return new FeedInfo(props);
     }
   }
 }

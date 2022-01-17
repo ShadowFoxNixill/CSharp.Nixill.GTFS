@@ -25,6 +25,9 @@ namespace Nixill.GTFS.Feeds
     public TwoKeyEntityCollection<Transfer, string, string> Transfers { get; }
     public IDEntityCollection<Pathway> Pathways { get; }
     public IDEntityCollection<Level> Levels { get; }
+    public GTFSGenericCollection<Translation> Translations { get; }
+    public FeedInfo FeedInfo { get; }
+    public GTFSGenericCollection<Attribution> Attributions { get; }
 
     public LenientGTFSFeed(IGTFSDataSource source)
     {
@@ -48,6 +51,15 @@ namespace Nixill.GTFS.Feeds
       Transfers = new TwoKeyEntityCollection<Transfer, string, string>(DataSource, "transfers", TransferFactory);
       Pathways = new IDEntityCollection<Pathway>(DataSource, "pathways", PathwayFactory);
       Levels = new IDEntityCollection<Level>(DataSource, "levels", LevelFactory);
+      Translations = new GTFSGenericCollection<Translation>(DataSource, "translations", TranslationFactory);
+      Attributions = new GTFSGenericCollection<Attribution>(DataSource, "attributions", AttributionFactory);
+      FeedInfo = null;
+
+      foreach (FeedInfo info in DataSource.GetObjects("feed_info", FeedInfoFactory, new List<GTFSUnparsedEntity>()))
+      {
+        FeedInfo = info;
+        break;
+      }
     }
 
     private Agency AgencyFactory(IEnumerable<(string, string)> properties)
@@ -88,5 +100,14 @@ namespace Nixill.GTFS.Feeds
 
     private Level LevelFactory(IEnumerable<(string, string)> properties)
       => new Level(new GTFSPropertyCollection(properties));
+
+    private Translation TranslationFactory(IEnumerable<(string, string)> properties)
+      => new Translation(new GTFSPropertyCollection(properties));
+
+    private Attribution AttributionFactory(IEnumerable<(string, string)> properties)
+      => new Attribution(new GTFSPropertyCollection(properties));
+
+    private FeedInfo FeedInfoFactory(IEnumerable<(string, string)> properties)
+      => new FeedInfo(new GTFSPropertyCollection(properties));
   }
 }
