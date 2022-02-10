@@ -11,11 +11,11 @@ namespace Nixill.GTFS.Entities
     public string ToStopID => Properties["to_stop_id"];
     public PathwayMode PathwayMode => (PathwayMode)Properties.GetInt("pathway_mode");
     public bool IsBidirectional => Properties.GetBool("is_bidirectional");
-    public double? Length => Properties.GetNullableNonNegativeDouble("length");
+    public decimal? Length => Properties.GetNullableNonNegativeDecimal("length");
     public Duration? TraversalTime => Properties.GetNullableDuration("traversal_time");
     public int? StairCount => Properties.GetNullableInt("stair_count");
-    public double? MaxSlope => Properties.GetNullableDouble("max_slope");
-    public double? MinWidth => Properties.GetNullableNonNegativeDouble("min_width");
+    public decimal? MaxSlope => Properties.GetNullableDecimal("max_slope");
+    public decimal? MinWidth => Properties.GetNullableNonNegativeDecimal("min_width");
     public string SignpostedAs => Properties["signposted_as"];
     public string RevesredSignpostedAs => Properties["reversed_signposted_as"];
 

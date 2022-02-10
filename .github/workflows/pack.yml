@@ -45,6 +45,5 @@ jobs:
           for f in ./out/*.nupkg
           do
             echo $f
-            echo dotnet nuget push $f --api-key secrets.NUGET_TOKEN --source https://api.nuget.org/v3/index.json
             dotnet nuget push $f --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json
           done
