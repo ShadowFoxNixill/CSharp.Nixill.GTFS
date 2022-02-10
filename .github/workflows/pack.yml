@@ -1,0 +1,48 @@
+# thanks to https://github.com/SierraSoftworks/sierralib.api.views/blob/master/.github/workflows/package.yml for helping me figure this out
+# GitHub's own documentation was a bit lacking.
+name: Publish to NuGet
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the project
+        uses: actions/checkout@master
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0'
+      - name: Setup nuget
+        uses: nuget/setup-nuget@v1
+        with:
+          nuget-version: 'latest'
+      - name: Test the package
+        run: dotnet test
+        env:
+          RELEASE_VERSION: ${{ github.event.release.tag_name }}
+      - name: Pack the thing up
+        run: |
+          cd CSharp.Nixill.GTFS/
+          dotnet pack -o out
+        env:
+          RELEASE_VERSION: ${{ github.event.release.tag_name }}
+      - name: Push to github release
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./CSharp.Nixill.GTFS/out/Nixill.${{ github.event.release.tag_name }}.nupkg
+          asset_name: Nixill.GTFS.${{ github.event.release.tag_name }}.nupkg
+          asset_content_type: application/zip
+      - name: Push to nuget.org
+        run: |
+          cd CSharp.Nixill.GTFS
+          for f in ./out/*.nupkg
+          do
+            dotnet nuget push $f --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json
+          done
