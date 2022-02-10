@@ -41,8 +41,8 @@ jobs:
           asset_content_type: application/zip
       - name: Push to nuget.org
         run: |
-          cd CSharp.Nixill.GTFS
           for f in ./out/*.nupkg
           do
+            echo $f
             dotnet nuget push $f --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json
           done
