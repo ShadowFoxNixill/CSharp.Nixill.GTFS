@@ -11,8 +11,8 @@ namespace Nixill.GTFS.Entities
     public string StopCode => Properties["stop_code"];
     public string Name => Properties["stop_name"];
     public string Description => Properties["stop_desc"];
-    public double? Latitude => Properties.GetNullableDouble("stop_lat");
-    public double? Longitude => Properties.GetNullableDouble("stop_lon");
+    public decimal? Latitude => Properties.GetNullableDecimal("stop_lat");
+    public decimal? Longitude => Properties.GetNullableDecimal("stop_lon");
     public string ZoneID => Properties["zone_id"];
     public string StopUrl => Properties["stop_url"];
     public StopLocationType LocationType => (StopLocationType)Properties.GetInt("location_type", 0);

@@ -36,13 +36,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./CSharp.Nixill.GTFS/out/Nixill.${{ github.event.release.tag_name }}.nupkg
+          asset_path: ./CSharp.Nixill.GTFS/out/Nixill.GTFS.${{ github.event.release.tag_name }}.nupkg
           asset_name: Nixill.GTFS.${{ github.event.release.tag_name }}.nupkg
           asset_content_type: application/zip
       - name: Push to nuget.org
         run: |
-          cd CSharp.Nixill.GTFS
+          cd CSharp.Nixill.GTFS/
           for f in ./out/*.nupkg
           do
+            echo $f
             dotnet nuget push $f --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json
           done
