@@ -18,6 +18,12 @@ namespace Nixill.GTFS.Parsing
     }
     public static void AssertExists(this GTFSPropertyCollection properties, string key) => AssertExists(properties[key], key);
 
+    public static void AssertDoesntExist(string input, string key)
+    {
+      if (!(input == null || input == "")) throw new PropertyException(key, "Should be null.");
+    }
+    public static void AssertDoesntExist(this GTFSPropertyCollection properties, string key) => AssertDoesntExist(properties[key], key);
+
     // Color: A color encoded as a six-digit hexadecimal number. Refer to
     //   https://htmlcolorcodes.com to generate a valid value (the leading
     //   "#" is not included).
@@ -324,6 +330,60 @@ namespace Nixill.GTFS.Parsing
     }
     public static void AssertNonNegativeDecimal(this GTFSPropertyCollection properties, string key) => AssertDecimal(properties[key], key);
 
+    public static int? GetNullableNonZeroInt(string input)
+    {
+      if (int.TryParse(input, out int result) && result != 0) return result;
+      else return null;
+    }
+    public static int? GetNullableNonZeroInt(this GTFSPropertyCollection properties, string key) => GetNullableNonZeroInt(properties[key]);
+
+    public static decimal? GetNullableNonZeroDecimal(string input)
+    {
+      if (decimal.TryParse(input, out decimal result) && result != 0) return result;
+      else return null;
+    }
+    public static decimal? GetNullableNonZeroDecimal(this GTFSPropertyCollection properties, string key) => GetNullableNonZeroDecimal(properties[key]);
+
+    public static double? GetNullableNonZeroDouble(string input)
+    {
+      if (double.TryParse(input, out double result) && result != 0) return result;
+      else return null;
+    }
+    public static double? GetNullableNonZeroDouble(this GTFSPropertyCollection properties, string key) => GetNullableNonZeroDouble(properties[key]);
+
+    public static bool IsNonZeroInt(string input) => int.TryParse(input, out int placeholder) && placeholder != 0;
+    public static bool IsNonZeroInt(this GTFSPropertyCollection properties, string key) => IsNonZeroInt(properties[key]);
+
+    public static bool IsNonZeroDecimal(string input) => decimal.TryParse(input, out decimal placeholder) && placeholder != 0;
+    public static bool IsNonZeroDecimal(this GTFSPropertyCollection properties, string key) => IsNonZeroDecimal(properties[key]);
+
+    public static bool IsNonZeroDouble(string input) => double.TryParse(input, out double placeholder) && placeholder != 0;
+    public static bool IsNonZeroDouble(this GTFSPropertyCollection properties, string key) => IsNonZeroDouble(properties[key]);
+
+    public static void AssertNonZeroInt(string input, string key)
+    {
+      AssertExists(input, key);
+      if (!IsInt(input)) throw new PropertyTypeException(key, $"{key} is not a valid integer.");
+      if (!IsNonZeroInt(input)) throw new PropertyRangeException(key, $"{key} is zero.");
+    }
+    public static void AssertNonZeroInt(this GTFSPropertyCollection properties, string key) => AssertNonZeroInt(properties[key], key);
+
+    public static void AssertNonZeroDouble(string input, string key)
+    {
+      AssertExists(input, key);
+      if (!IsDouble(input)) throw new PropertyTypeException(key, $"{key} is not a valid double.");
+      if (!IsNonZeroDouble(input)) throw new PropertyRangeException(key, $"{key} is zero.");
+    }
+    public static void AssertNonZeroDouble(this GTFSPropertyCollection properties, string key) => AssertNonZeroDouble(properties[key], key);
+
+    public static void AssertNonZeroDecimal(string input, string key)
+    {
+      AssertExists(input, key);
+      if (!IsDecimal(input)) throw new PropertyTypeException(key, $"{key} is not a valid decimal.");
+      if (!IsNonZeroDecimal(input)) throw new PropertyRangeException(key, $"{key} is zero.");
+    }
+    public static void AssertNonZeroDecimal(this GTFSPropertyCollection properties, string key) => AssertDecimal(properties[key], key);
+
     public static bool GetBool(string input)
     {
       return input == "1";
@@ -387,5 +447,41 @@ namespace Nixill.GTFS.Parsing
     }
     public static void AssertForeignKeyExists(this GTFSPropertyCollection properties, string key, GTFSCalendarCollection collection, string collectionName)
       => AssertForeignKeyExists(properties[key], key, collection, collectionName);
+
+    public static void AssertOptionalForeignKeyExists<T>(string input, string key, IDEntityCollection<T> collection, string collectionName) where T : GTFSIdentifiedEntity
+    {
+      if (input == null) return;
+      if (!collection.Contains(input))
+      {
+        if (input == "") return;
+        else throw new PropertyForeignKeyException(key, $"The collection {collectionName} doesn't contain the key {input}.");
+      }
+    }
+    public static void AssertOptionalForeignKeyExists<T>(this GTFSPropertyCollection properties, string key, IDEntityCollection<T> collection, string collectionName) where T : GTFSIdentifiedEntity
+      => AssertOptionalForeignKeyExists(properties[key], key, collection, collectionName);
+
+    public static void AssertOptionalForeignKeyExists<T>(string input, string key, GTFSOrderedEntityCollection<T> collection, string collectionName) where T : GTFSOrderedEntity
+    {
+      if (input == null) return;
+      if (!collection.Contains(input))
+      {
+        if (input == "") return;
+        else throw new PropertyForeignKeyException(key, $"The collection {collectionName} doesn't contain the key {input}.");
+      }
+    }
+    public static void AssertOptionalForeignKeyExists<T>(this GTFSPropertyCollection properties, string key, GTFSOrderedEntityCollection<T> collection, string collectionName) where T : GTFSOrderedEntity
+      => AssertOptionalForeignKeyExists(properties[key], key, collection, collectionName);
+
+    public static void AssertOptionalForeignKeyExists(string input, string key, GTFSCalendarCollection collection, string collectionName)
+    {
+      if (input == null) return;
+      if (!collection.Contains(input))
+      {
+        if (input == "") return;
+        else throw new PropertyForeignKeyException(key, $"The collection {collectionName} doesn't contain the key {input}.");
+      }
+    }
+    public static void AssertOptionalForeignKeyExists(this GTFSPropertyCollection properties, string key, GTFSCalendarCollection collection, string collectionName)
+      => AssertOptionalForeignKeyExists(properties[key], key, collection, collectionName);
   }
 }

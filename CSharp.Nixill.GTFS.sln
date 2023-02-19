@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Nixill.GTFS", "CShar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Nixill.GTFS.Test", "CSharp.Nixill.GTFS.Test\CSharp.Nixill.GTFS.Test.csproj", "{95BEE50F-8421-4F2D-8BBE-0F26B963A948}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Nixill.GTFS.Extensions", "CSharp.Nixill.GTFS.Extensions\CSharp.Nixill.GTFS.Extensions.csproj", "{6BFB028C-844C-4B8B-A781-D6E81D430995}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,17 +44,5 @@ Global
 		{95BEE50F-8421-4F2D-8BBE-0F26B963A948}.Release|x64.Build.0 = Release|Any CPU
 		{95BEE50F-8421-4F2D-8BBE-0F26B963A948}.Release|x86.ActiveCfg = Release|Any CPU
 		{95BEE50F-8421-4F2D-8BBE-0F26B963A948}.Release|x86.Build.0 = Release|Any CPU
-		{6BFB028C-844C-4B8B-A781-D6E81D430995}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6BFB028C-844C-4B8B-A781-D6E81D430995}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6BFB028C-844C-4B8B-A781-D6E81D430995}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{6BFB028C-844C-4B8B-A781-D6E81D430995}.Debug|x64.Build.0 = Debug|Any CPU
-		{6BFB028C-844C-4B8B-A781-D6E81D430995}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6BFB028C-844C-4B8B-A781-D6E81D430995}.Debug|x86.Build.0 = Debug|Any CPU
-		{6BFB028C-844C-4B8B-A781-D6E81D430995}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6BFB028C-844C-4B8B-A781-D6E81D430995}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6BFB028C-844C-4B8B-A781-D6E81D430995}.Release|x64.ActiveCfg = Release|Any CPU
-		{6BFB028C-844C-4B8B-A781-D6E81D430995}.Release|x64.Build.0 = Release|Any CPU
-		{6BFB028C-844C-4B8B-A781-D6E81D430995}.Release|x86.ActiveCfg = Release|Any CPU
-		{6BFB028C-844C-4B8B-A781-D6E81D430995}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

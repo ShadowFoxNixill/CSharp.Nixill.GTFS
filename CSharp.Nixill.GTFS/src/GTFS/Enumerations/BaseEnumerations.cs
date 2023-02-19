@@ -61,7 +61,9 @@ namespace Nixill.GTFS.Enumerations
     Recommended = 0,
     Timed = 1,
     MinimumTime = 2,
-    NotPossible = 3
+    NotPossible = 3,
+    InSeat = 4,
+    InterSeat = 5
   }
 
   public enum PathwayMode
@@ -73,5 +75,20 @@ namespace Nixill.GTFS.Enumerations
     Elevator = 5,
     FareGate = 6,
     ExitGate = 7
+  }
+
+  public enum DurationLimitType
+  {
+    DepartToArrive = 0,
+    DepartToDepart = 1,
+    ArriveToDepart = 2,
+    ArriveToArrive = 3
+  }
+
+  public enum FareTransferType
+  {
+    FirstLeg = 0,
+    AllLegs = 1,
+    NoLegs = 2
   }
 }

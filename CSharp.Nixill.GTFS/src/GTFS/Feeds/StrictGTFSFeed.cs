@@ -23,9 +23,14 @@ namespace Nixill.GTFS.Feeds
     public GTFSOrderedEntityCollection<StopTime> StopTimes { get; }
     public IDEntityCollection<FareAttribute> FareAttributes { get; }
     public GTFSGenericCollection<FareRule> FareRules { get; }
+    public IDEntityCollection<FareProduct> FareProducts { get; }
+    public GTFSGenericCollection<FareLegRule> FareLegRules { get; }
+    public GTFSGenericCollection<FareTransferRule> FareTransferRules { get; }
+    public IDEntityCollection<Area> Areas { get; }
+    public TwoKeyEntityCollection<StopArea, string, string> StopAreas { get; }
     public GTFSOrderedEntityCollection<ShapePoint> ShapePoints { get; }
     public TwoKeyEntityCollection<Frequency, string, Duration> Frequencies { get; }
-    public TwoKeyEntityCollection<Transfer, string, string> Transfers { get; }
+    public GTFSGenericCollection<Transfer> Transfers { get; }
     public IDEntityCollection<Pathway> Pathways { get; }
     public IDEntityCollection<Level> Levels { get; }
     public GTFSGenericCollection<Translation> Translations { get; }
@@ -51,9 +56,14 @@ namespace Nixill.GTFS.Feeds
       StopTimes = new GTFSOrderedEntityCollection<StopTime>(DataSource, "stop_times", StopTimeFactory);
       FareAttributes = new IDEntityCollection<FareAttribute>(DataSource, "fare_attributes", FareAttributeFactory);
       FareRules = new GTFSGenericCollection<FareRule>(DataSource, "fare_rules", FareRuleFactory);
+      FareProducts = new IDEntityCollection<FareProduct>(DataSource, "fare_products", FareProductFactory);
+      Areas = new IDEntityCollection<Area>(DataSource, "areas", AreaFactory);
+      FareLegRules = new GTFSGenericCollection<FareLegRule>(DataSource, "fare_leg_rules", FareLegRuleFactory);
+      FareTransferRules = new GTFSGenericCollection<FareTransferRule>(DataSource, "fare_transfer_rules", FareTransferRuleFactory);
+      StopAreas = new TwoKeyEntityCollection<StopArea, string, string>(DataSource, "stop_areas", StopAreaFactory);
       ShapePoints = new GTFSOrderedEntityCollection<ShapePoint>(DataSource, "shapes", ShapePointFactory);
       Frequencies = new TwoKeyEntityCollection<Frequency, string, Duration>(DataSource, "frequencies", FrequencyFactory);
-      Transfers = new TwoKeyEntityCollection<Transfer, string, string>(DataSource, "transfers", TransferFactory);
+      Transfers = new GTFSGenericCollection<Transfer>(DataSource, "transfers", TransferFactory);
       Pathways = new IDEntityCollection<Pathway>(DataSource, "pathways", PathwayFactory);
       Translations = new GTFSGenericCollection<Translation>(DataSource, "translations", TranslationFactory);
       Attributions = new GTFSGenericCollection<Attribution>(DataSource, "attributions", AttributionFactory);
@@ -189,6 +199,71 @@ namespace Nixill.GTFS.Feeds
       return new FareRule(props);
     }
 
+    private FareProduct FareProductFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertExists("fare_product_id");
+      props.AssertNonNegativeDecimal("amount");
+      props.AssertExists("currency");
+      return new FareProduct(props);
+    }
+
+    private FareLegRule FareLegRuleFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertExists("leg_group_id");
+      props.AssertOptionalForeignKeyExists("from_area_id", Areas, "areas");
+      props.AssertOptionalForeignKeyExists("to_area_id", Areas, "areas");
+      return new FareLegRule(props);
+    }
+
+    private FareTransferRule FareTransferRuleFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertNonNegativeInt("fare_transfer_type");
+      props.AssertOptionalForeignKeyExists("fare_product_id", FareProducts, "fare_products");
+
+      if (props["from_leg_group_id"] != null)
+      {
+        if (props["from_leg_group_id"] == props["to_leg_group_id"])
+        {
+          props.AssertNonZeroInt("transfer_count");
+        }
+        else
+        {
+          props.AssertDoesntExist("transfer_count");
+        }
+      }
+
+      if (props.ContainsKey("duration_limit"))
+      {
+        props.AssertNonZeroInt("duration_limit");
+        props.AssertNonNegativeInt("duration_limit");
+        props.AssertNonNegativeInt("duration_limit_type");
+      }
+      else
+      {
+        props.AssertDoesntExist("duration_limit_type");
+      }
+
+      return new FareTransferRule(props);
+    }
+
+    private Area AreaFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertExists("area_id");
+      return new Area(props);
+    }
+
+    private StopArea StopAreaFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertForeignKeyExists("area_id", Areas, "areas");
+      props.AssertForeignKeyExists("stop_id", Stops, "stops");
+      return new StopArea(props);
+    }
+
     private ShapePoint ShapePointFactory(IEnumerable<(string, string)> properties)
     {
       GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
@@ -212,12 +287,23 @@ namespace Nixill.GTFS.Feeds
     private Transfer TransferFactory(IEnumerable<(string, string)> properties)
     {
       GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
-      props.AssertForeignKeyExists("from_stop_id", Stops, "stops");
-      props.AssertForeignKeyExists("to_stop_id", Stops, "stops");
+      props.AssertOptionalForeignKeyExists("from_stop_id", Stops, "stops");
+      props.AssertOptionalForeignKeyExists("to_stop_id", Stops, "stops");
+      props.AssertOptionalForeignKeyExists("from_route_id", Routes, "routes");
+      props.AssertOptionalForeignKeyExists("to_route_id", Routes, "routes");
+      props.AssertOptionalForeignKeyExists("from_trip_id", Trips, "trips");
+      props.AssertOptionalForeignKeyExists("to_trip_id", Trips, "trips");
       props.AssertInt("transfer_type");
       if (props["transfer_type"] == "2")
       {
         props.AssertDuration("min_transfer_time");
+      }
+      else if (props["transfer_type"] == "4" || props["transfer_type"] == "5")
+      {
+        props.AssertDoesntExist("from_stop_id");
+        props.AssertDoesntExist("to_stop_id");
+        props.AssertExists("from_trip_id");
+        props.AssertExists("to_trip_id");
       }
       return new Transfer(props);
     }

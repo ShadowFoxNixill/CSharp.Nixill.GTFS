@@ -20,9 +20,14 @@ namespace Nixill.GTFS.Feeds
     public GTFSOrderedEntityCollection<StopTime> StopTimes { get; }
     public IDEntityCollection<FareAttribute> FareAttributes { get; }
     public GTFSGenericCollection<FareRule> FareRules { get; }
+    public IDEntityCollection<FareProduct> FareProducts { get; }
+    public GTFSGenericCollection<FareLegRule> FareLegRules { get; }
+    public GTFSGenericCollection<FareTransferRule> FareTransferRules { get; }
+    public IDEntityCollection<Area> Areas { get; }
+    public TwoKeyEntityCollection<StopArea, string, string> StopAreas { get; }
     public GTFSOrderedEntityCollection<ShapePoint> ShapePoints { get; }
     public TwoKeyEntityCollection<Frequency, string, Duration> Frequencies { get; }
-    public TwoKeyEntityCollection<Transfer, string, string> Transfers { get; }
+    public GTFSGenericCollection<Transfer> Transfers { get; }
     public IDEntityCollection<Pathway> Pathways { get; }
     public IDEntityCollection<Level> Levels { get; }
     public GTFSGenericCollection<Translation> Translations { get; }
@@ -46,9 +51,15 @@ namespace Nixill.GTFS.Feeds
       Trips = new IDEntityCollection<Trip>(DataSource, "trips", TripFactory);
       StopTimes = new GTFSOrderedEntityCollection<StopTime>(DataSource, "stop_times", StopTimeFactory);
       FareAttributes = new IDEntityCollection<FareAttribute>(DataSource, "fare_attributes", FareAttributeFactory);
+      FareRules = new GTFSGenericCollection<FareRule>(DataSource, "fare_rules", FareRuleFactory);
+      FareProducts = new IDEntityCollection<FareProduct>(DataSource, "fare_products", FareProductFactory);
+      FareLegRules = new GTFSGenericCollection<FareLegRule>(DataSource, "fare_leg_rules", FareLegRuleFactory);
+      FareTransferRules = new GTFSGenericCollection<FareTransferRule>(DataSource, "fare_transfer_rules", FareTransferRuleFactory);
+      Areas = new IDEntityCollection<Area>(DataSource, "areas", AreaFactory);
+      StopAreas = new TwoKeyEntityCollection<StopArea, string, string>(DataSource, "stop_areas", StopAreaFactory);
       ShapePoints = new GTFSOrderedEntityCollection<ShapePoint>(DataSource, "shapes", ShapePointFactory);
       Frequencies = new TwoKeyEntityCollection<Frequency, string, Duration>(DataSource, "frequencies", FrequencyFactory);
-      Transfers = new TwoKeyEntityCollection<Transfer, string, string>(DataSource, "transfers", TransferFactory);
+      Transfers = new GTFSGenericCollection<Transfer>(DataSource, "transfers", TransferFactory);
       Pathways = new IDEntityCollection<Pathway>(DataSource, "pathways", PathwayFactory);
       Levels = new IDEntityCollection<Level>(DataSource, "levels", LevelFactory);
       Translations = new GTFSGenericCollection<Translation>(DataSource, "translations", TranslationFactory);
@@ -85,6 +96,24 @@ namespace Nixill.GTFS.Feeds
 
     private FareAttribute FareAttributeFactory(IEnumerable<(string, string)> properties)
       => new FareAttribute(new GTFSPropertyCollection(properties, DefaultAgencyID));
+
+    private FareRule FareRuleFactory(IEnumerable<(string, string)> properties)
+      => new FareRule(new GTFSPropertyCollection(properties));
+
+    private FareProduct FareProductFactory(IEnumerable<(string, string)> properties)
+      => new FareProduct(new GTFSPropertyCollection(properties));
+
+    private FareLegRule FareLegRuleFactory(IEnumerable<(string, string)> properties)
+      => new FareLegRule(new GTFSPropertyCollection(properties));
+
+    private FareTransferRule FareTransferRuleFactory(IEnumerable<(string, string)> properties)
+      => new FareTransferRule(new GTFSPropertyCollection(properties));
+
+    private Area AreaFactory(IEnumerable<(string, string)> properties)
+      => new Area(new GTFSPropertyCollection(properties));
+
+    private StopArea StopAreaFactory(IEnumerable<(string, string)> properties)
+      => new StopArea(new GTFSPropertyCollection(properties));
 
     private ShapePoint ShapePointFactory(IEnumerable<(string, string)> properties)
       => new ShapePoint(new GTFSPropertyCollection(properties));

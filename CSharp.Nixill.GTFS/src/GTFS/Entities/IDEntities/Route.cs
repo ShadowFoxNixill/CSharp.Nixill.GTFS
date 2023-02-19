@@ -19,6 +19,7 @@ namespace Nixill.GTFS.Entities
     public int? SortOrder => Properties.GetNullableInt("route_sort_order");
     public PickupDropoffType ContinuousPickup => (PickupDropoffType)Properties.GetInt("continuous_pickup", 1);
     public PickupDropoffType ContinuousDropoff => (PickupDropoffType)Properties.GetInt("continuous_drop_off", 1);
+    public string NetworkID => Properties["network_id"];
 
     public Route(GTFSPropertyCollection properties) : base(properties, "route_id")
     {

@@ -14,8 +14,5 @@ namespace Nixill.GTFS.Entities
     public bool ExactTimes => Properties.GetBool("exact_times");
 
     public Frequency(GTFSPropertyCollection properties) : base(properties, properties["trip_id"], properties.GetTime("start_time")) { }
-
-    public static Frequency Factory(IEnumerable<(string, string)> properties)
-      => new Frequency(new GTFSPropertyCollection(properties));
   }
 }
