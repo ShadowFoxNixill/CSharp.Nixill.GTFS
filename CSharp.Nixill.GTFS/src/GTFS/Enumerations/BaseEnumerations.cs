@@ -91,4 +91,13 @@ namespace Nixill.GTFS.Enumerations
     AllLegs = 1,
     NoLegs = 2
   }
+
+  public enum FareMediaType
+  {
+    Cash = 0,
+    PaperTicket = 1,
+    TransitCard = 2,
+    BankCard = 3,
+    MobileApp = 4
+  }
 }

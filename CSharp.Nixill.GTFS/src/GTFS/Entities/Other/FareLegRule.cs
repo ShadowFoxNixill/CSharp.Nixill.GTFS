@@ -11,5 +11,7 @@ namespace Nixill.GTFS.Entities
     public string FromAreaID => Properties["from_area_id"];
     public string ToAreaID => Properties["to_area_id"];
     public string FareProductID => Properties["fare_product_id"];
+    public string FromTimeframeGroupID => Properties["from_timeframe_group_id"];
+    public string ToTimeframeGroupID => Properties["to_timeframe_group_id"];
   }
 }

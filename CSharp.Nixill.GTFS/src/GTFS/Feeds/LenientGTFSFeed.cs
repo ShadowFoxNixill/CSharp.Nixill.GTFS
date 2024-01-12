@@ -4,6 +4,7 @@ using System.Linq;
 using Nixill.GTFS.Sources;
 using System.Collections.Generic;
 using NodaTime;
+using System.Numerics;
 
 namespace Nixill.GTFS.Feeds
 {
@@ -19,12 +20,16 @@ namespace Nixill.GTFS.Feeds
     public IDEntityCollection<Trip> Trips { get; }
     public GTFSOrderedEntityCollection<StopTime> StopTimes { get; }
     public IDEntityCollection<FareAttribute> FareAttributes { get; }
+    public GTFSGenericCollection<Timeframe> Timeframes { get; }
     public GTFSGenericCollection<FareRule> FareRules { get; }
-    public IDEntityCollection<FareProduct> FareProducts { get; }
+    public IDEntityCollection<FareMedia> FareMedia { get; }
+    public TwoKeyEntityCollection<FareProduct, string, string> FareProducts { get; }
     public GTFSGenericCollection<FareLegRule> FareLegRules { get; }
     public GTFSGenericCollection<FareTransferRule> FareTransferRules { get; }
     public IDEntityCollection<Area> Areas { get; }
     public TwoKeyEntityCollection<StopArea, string, string> StopAreas { get; }
+    public IDEntityCollection<Network> Networks { get; }
+    public TwoKeyEntityCollection<RouteNetwork, string, string> RouteNetworks { get; }
     public GTFSOrderedEntityCollection<ShapePoint> ShapePoints { get; }
     public TwoKeyEntityCollection<Frequency, string, Duration> Frequencies { get; }
     public GTFSGenericCollection<Transfer> Transfers { get; }
@@ -51,12 +56,16 @@ namespace Nixill.GTFS.Feeds
       Trips = new IDEntityCollection<Trip>(DataSource, "trips", TripFactory);
       StopTimes = new GTFSOrderedEntityCollection<StopTime>(DataSource, "stop_times", StopTimeFactory);
       FareAttributes = new IDEntityCollection<FareAttribute>(DataSource, "fare_attributes", FareAttributeFactory);
+      Timeframes = new GTFSGenericCollection<Timeframe>(DataSource, "timeframes", TimeframeFactory);
       FareRules = new GTFSGenericCollection<FareRule>(DataSource, "fare_rules", FareRuleFactory);
-      FareProducts = new IDEntityCollection<FareProduct>(DataSource, "fare_products", FareProductFactory);
+      FareMedia = new IDEntityCollection<FareMedia>(DataSource, "fare_media", FareMediaFactory);
+      FareProducts = new TwoKeyEntityCollection<FareProduct, string, string>(DataSource, "fare_products", FareProductFactory);
       FareLegRules = new GTFSGenericCollection<FareLegRule>(DataSource, "fare_leg_rules", FareLegRuleFactory);
       FareTransferRules = new GTFSGenericCollection<FareTransferRule>(DataSource, "fare_transfer_rules", FareTransferRuleFactory);
       Areas = new IDEntityCollection<Area>(DataSource, "areas", AreaFactory);
       StopAreas = new TwoKeyEntityCollection<StopArea, string, string>(DataSource, "stop_areas", StopAreaFactory);
+      Networks = new IDEntityCollection<Network>(DataSource, "networks", NetworkFactory);
+      RouteNetworks = new TwoKeyEntityCollection<RouteNetwork, string, string>(DataSource, "route_networks", RouteNetworkFactory);
       ShapePoints = new GTFSOrderedEntityCollection<ShapePoint>(DataSource, "shapes", ShapePointFactory);
       Frequencies = new TwoKeyEntityCollection<Frequency, string, Duration>(DataSource, "frequencies", FrequencyFactory);
       Transfers = new GTFSGenericCollection<Transfer>(DataSource, "transfers", TransferFactory);
@@ -97,8 +106,14 @@ namespace Nixill.GTFS.Feeds
     private FareAttribute FareAttributeFactory(IEnumerable<(string, string)> properties)
       => new FareAttribute(new GTFSPropertyCollection(properties, DefaultAgencyID));
 
+    private Timeframe TimeframeFactory(IEnumerable<(string, string)> properties)
+      => new Timeframe(new GTFSPropertyCollection(properties));
+
     private FareRule FareRuleFactory(IEnumerable<(string, string)> properties)
       => new FareRule(new GTFSPropertyCollection(properties));
+
+    private FareMedia FareMediaFactory(IEnumerable<(string, string)> properties)
+      => new FareMedia(new GTFSPropertyCollection(properties));
 
     private FareProduct FareProductFactory(IEnumerable<(string, string)> properties)
       => new FareProduct(new GTFSPropertyCollection(properties));
@@ -114,6 +129,12 @@ namespace Nixill.GTFS.Feeds
 
     private StopArea StopAreaFactory(IEnumerable<(string, string)> properties)
       => new StopArea(new GTFSPropertyCollection(properties));
+
+    private Network NetworkFactory(IEnumerable<(string, string)> properties)
+      => new Network(new GTFSPropertyCollection(properties));
+
+    private RouteNetwork RouteNetworkFactory(IEnumerable<(string, string)> properties)
+      => new RouteNetwork(new GTFSPropertyCollection(properties));
 
     private ShapePoint ShapePointFactory(IEnumerable<(string, string)> properties)
       => new ShapePoint(new GTFSPropertyCollection(properties));

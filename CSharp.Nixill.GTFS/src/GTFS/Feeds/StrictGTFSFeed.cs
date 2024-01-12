@@ -23,11 +23,15 @@ namespace Nixill.GTFS.Feeds
     public GTFSOrderedEntityCollection<StopTime> StopTimes { get; }
     public IDEntityCollection<FareAttribute> FareAttributes { get; }
     public GTFSGenericCollection<FareRule> FareRules { get; }
-    public IDEntityCollection<FareProduct> FareProducts { get; }
+    public GTFSGenericCollection<Timeframe> Timeframes { get; }
+    public IDEntityCollection<FareMedia> FareMedia { get; }
+    public TwoKeyEntityCollection<FareProduct, string, string> FareProducts { get; }
     public GTFSGenericCollection<FareLegRule> FareLegRules { get; }
     public GTFSGenericCollection<FareTransferRule> FareTransferRules { get; }
     public IDEntityCollection<Area> Areas { get; }
     public TwoKeyEntityCollection<StopArea, string, string> StopAreas { get; }
+    public IDEntityCollection<Network> Networks { get; }
+    public TwoKeyEntityCollection<RouteNetwork, string, string> RouteNetworks { get; }
     public GTFSOrderedEntityCollection<ShapePoint> ShapePoints { get; }
     public TwoKeyEntityCollection<Frequency, string, Duration> Frequencies { get; }
     public GTFSGenericCollection<Transfer> Transfers { get; }
@@ -56,11 +60,15 @@ namespace Nixill.GTFS.Feeds
       StopTimes = new GTFSOrderedEntityCollection<StopTime>(DataSource, "stop_times", StopTimeFactory);
       FareAttributes = new IDEntityCollection<FareAttribute>(DataSource, "fare_attributes", FareAttributeFactory);
       FareRules = new GTFSGenericCollection<FareRule>(DataSource, "fare_rules", FareRuleFactory);
-      FareProducts = new IDEntityCollection<FareProduct>(DataSource, "fare_products", FareProductFactory);
+      Timeframes = new GTFSGenericCollection<Timeframe>(DataSource, "timeframes", TimeframeFactory);
+      FareMedia = new IDEntityCollection<FareMedia>(DataSource, "fare_media", FareMediaFactory);
+      FareProducts = new TwoKeyEntityCollection<FareProduct, string, string>(DataSource, "fare_products", FareProductFactory);
+      Networks = new IDEntityCollection<Network>(DataSource, "networks", NetworkFactory);
       Areas = new IDEntityCollection<Area>(DataSource, "areas", AreaFactory);
       FareLegRules = new GTFSGenericCollection<FareLegRule>(DataSource, "fare_leg_rules", FareLegRuleFactory);
       FareTransferRules = new GTFSGenericCollection<FareTransferRule>(DataSource, "fare_transfer_rules", FareTransferRuleFactory);
       StopAreas = new TwoKeyEntityCollection<StopArea, string, string>(DataSource, "stop_areas", StopAreaFactory);
+      RouteNetworks = new TwoKeyEntityCollection<RouteNetwork, string, string>(DataSource, "route_networks", RouteNetworkFactory);
       ShapePoints = new GTFSOrderedEntityCollection<ShapePoint>(DataSource, "shapes", ShapePointFactory);
       Frequencies = new TwoKeyEntityCollection<Frequency, string, Duration>(DataSource, "frequencies", FrequencyFactory);
       Transfers = new GTFSGenericCollection<Transfer>(DataSource, "transfers", TransferFactory);
@@ -199,10 +207,55 @@ namespace Nixill.GTFS.Feeds
       return new FareRule(props);
     }
 
+    private Timeframe TimeframeFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertExists("timeframe_group_id");
+      props.AssertForeignKeyExists("service_id", Calendars, "calendars");
+      if (props.ContainsKey("start_time"))
+      {
+        props.AssertTime("start_time");
+        if (props.ContainsKey("end_time"))
+        {
+          props.AssertTime("end_time");
+          if (props.GetTime("end_time") <= props.GetTime("start_time"))
+            throw new PropertyRangeException("start_time, end_time", "Start time must precede end time.");
+          if (props.GetTime("end_time") > Duration.FromHours(24))
+            throw new PropertyRangeException("start_time, end_time", "Timeframes must not exceed 24:00:00.");
+        }
+        else
+        {
+          if (props.GetTime("start_time") > Duration.FromHours(24))
+            throw new PropertyRangeException("start_time", "Timeframes must not exceed 24:00:00.");
+          if (props.GetTime("start_time") == Duration.FromHours(24))
+            throw new PropertyRangeException("start_time", "Start time must precede end time (which defaulted to 24:00:00).");
+        }
+      }
+      else
+      {
+        if (props.ContainsKey("end_time"))
+        {
+          props.AssertTime("end_time");
+          if (props.GetTime("end_time") > Duration.FromHours(24))
+            throw new PropertyRangeException("end_time", "Timeframes must not exceed 24:00:00.");
+        }
+      }
+      return new Timeframe(props);
+    }
+
+    private FareMedia FareMediaFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertExists("fare_media_id");
+      props.AssertInt("fare_media_type");
+      return new FareMedia(props);
+    }
+
     private FareProduct FareProductFactory(IEnumerable<(string, string)> properties)
     {
       GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
       props.AssertExists("fare_product_id");
+      props.AssertOptionalForeignKeyExists("fare_media_id", FareMedia, "fare_media");
       props.AssertNonNegativeDecimal("amount");
       props.AssertExists("currency");
       return new FareProduct(props);
@@ -221,7 +274,12 @@ namespace Nixill.GTFS.Feeds
     {
       GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
       props.AssertNonNegativeInt("fare_transfer_type");
-      props.AssertOptionalForeignKeyExists("fare_product_id", FareProducts, "fare_products");
+
+      if (props.ContainsKey("fare_product_id"))
+      {
+        if (!FareProducts.Any(x => x.ID == props["fare_product_id"]))
+          throw new PropertyForeignKeyException("fare_product_id", $"The collection fare_media doesn't contain the key {props["fare_product_id"]}.");
+      }
 
       if (props["from_leg_group_id"] != null)
       {
@@ -262,6 +320,21 @@ namespace Nixill.GTFS.Feeds
       props.AssertForeignKeyExists("area_id", Areas, "areas");
       props.AssertForeignKeyExists("stop_id", Stops, "stops");
       return new StopArea(props);
+    }
+
+    private Network NetworkFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertExists("network_id");
+      return new Network(props);
+    }
+
+    private RouteNetwork RouteNetworkFactory(IEnumerable<(string, string)> properties)
+    {
+      GTFSPropertyCollection props = new GTFSPropertyCollection(properties);
+      props.AssertForeignKeyExists("network_id", Networks, "networks");
+      props.AssertForeignKeyExists("route_id", Routes, "routes");
+      return new RouteNetwork(props);
     }
 
     private ShapePoint ShapePointFactory(IEnumerable<(string, string)> properties)
