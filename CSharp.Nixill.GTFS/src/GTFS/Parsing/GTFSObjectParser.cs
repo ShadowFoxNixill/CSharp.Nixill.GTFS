@@ -116,7 +116,7 @@ namespace Nixill.GTFS.Parsing
     public static Duration? GetNullableTime(string input)
     {
       if (input == null) return null;
-      ParseResult<Duration> res = TimePattern.Parse(input);
+      ParseResult<Duration> res = TimePattern.Parse(input.Trim());
       if (res.Success) return res.Value;
       else return null;
     }
@@ -124,7 +124,7 @@ namespace Nixill.GTFS.Parsing
 
     public static Duration GetTime(string input, Duration? def = null)
     {
-      ParseResult<Duration> res = TimePattern.Parse(input);
+      ParseResult<Duration> res = TimePattern.Parse(input.Trim());
       if (res.Success) return res.Value;
       if (def.HasValue) return def.Value;
       else throw res.Exception;
@@ -134,7 +134,7 @@ namespace Nixill.GTFS.Parsing
     public static bool IsTime(string input)
     {
       if (input == null) return false;
-      return TimeRegex.IsMatch(input);
+      return TimeRegex.IsMatch(input.Trim());
     }
     public static bool IsTime(this GTFSPropertyCollection properties, string key) => IsTime(properties[key]);
 

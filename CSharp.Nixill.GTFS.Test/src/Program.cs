@@ -13,7 +13,7 @@ namespace Nixill.Testing
   {
     static void Main(string[] args)
     {
-      var source = new DirectoryGTFSDataSource("gtfs/ddot_gtfs");
+      var source = new ZipGTFSDataSource("gtfs/cota.gtfs.zip");
       StopTimeTest(source);
     }
 
@@ -32,7 +32,7 @@ namespace Nixill.Testing
         var rt = feed.Routes[group.Key.RouteID];
         var cal = feed.Calendars[group.Key.ServiceID].Item1;
 
-        string header = $"{rt.Type} {rt.ShortName} {rt.LongName} - {DayMasks.Get(cal.Mask)}";
+        string header = $"{rt.Type} {rt.ShortName} {rt.LongName} - {DayMasks.Get((int)cal.Mask)}";
 
         Duration min = Duration.MaxValue;
         Duration max = Duration.MinValue;
@@ -67,7 +67,7 @@ namespace Nixill.Testing
       foreach ((Calendar Cal, IEnumerable<CalendarDate> CalDates) cal in feed.Calendars)
       {
         Console.WriteLine($"Calendar: {cal.Cal.ID}");
-        Console.WriteLine($"Provides service on: {DayMasks.Get(cal.Cal.Mask)}");
+        Console.WriteLine($"Provides service on: {DayMasks.Get((int)cal.Cal.Mask)}");
         Console.WriteLine($"Active {ptn.Format(cal.Cal.StartDate)} through {ptn.Format(cal.Cal.EndDate)}");
         Console.WriteLine("Exceptions:");
         foreach (CalendarDate date in cal.CalDates)

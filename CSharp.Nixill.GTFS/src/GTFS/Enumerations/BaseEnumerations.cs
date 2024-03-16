@@ -1,3 +1,5 @@
+using System;
+
 namespace Nixill.GTFS.Enumerations
 {
   public enum Tristate

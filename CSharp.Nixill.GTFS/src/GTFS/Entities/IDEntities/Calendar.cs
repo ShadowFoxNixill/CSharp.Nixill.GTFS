@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Nixill.GTFS.Collections;
+using Nixill.GTFS.Enumerations;
 using Nixill.GTFS.Parsing;
 using NodaTime;
 
@@ -18,7 +19,7 @@ namespace Nixill.GTFS.Entities
     public bool Saturday => Properties["saturday"] == "1";
     public bool Sunday => Properties["sunday"] == "1";
 
-    public byte Mask => (byte)(
+    public CalendarDaysOfWeek Mask => (CalendarDaysOfWeek)(
       (Monday ? 1 : 0) +
       (Tuesday ? 2 : 0) +
       (Wednesday ? 4 : 0) +
