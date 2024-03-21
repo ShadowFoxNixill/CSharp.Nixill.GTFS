@@ -10,8 +10,8 @@ namespace Nixill.GTFS.Entities
   {
     public string TripID => Properties["trip_id"];
     public int StopSequence => Properties.GetInt("stop_sequence");
-    public Duration? ArrivalTime => Properties.GetTime("arrival_time");
-    public Duration? DepartureTime => Properties.GetTime("departure_time");
+    public Duration? ArrivalTime => Properties.GetNullableTime("arrival_time");
+    public Duration? DepartureTime => Properties.GetNullableTime("departure_time");
     public string StopID => Properties["stop_id"];
     public string Headsign => Properties["stop_headsign"];
     public PickupDropoffType PickupType => (PickupDropoffType)Properties.GetInt("pickup_type", 0);
